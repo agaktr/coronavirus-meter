@@ -2190,7 +2190,7 @@ function loadCharts(countryName,data) {
             labels: dates,
             datasets: [
                 {
-                    label: 'Totan Recovered',
+                    label: 'Total Recovered',
                     backgroundColor: "rgba(58,255,0,0)",
                     hoverBackgroundColor: "rgba(58,255,0,0.6)",
                     borderColor: '#3AFF00',
