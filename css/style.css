@@ -1,0 +1,480 @@
+/**
+ * All of the CSS for the public-facing functionality should be
+ * included in this file.
+ */
+@font-face {
+    font-family: Myriad Pro;
+    src: url(../fonts/MyriadPro/MYRIADPRO-REGULAR.woff);
+
+}
+@font-face {
+    font-family: Myriad Pro;
+    src: url(../fonts/MyriadPro/MYRIADPRO-BOLD.woff);
+    font-weight: bold;
+}
+
+html {
+    overflow: hidden;
+}
+body {
+    margin: 0;
+    width: 100%;
+    height: 100vh;
+    font-family: Myriad Pro, serif;
+    font-size: 14px;
+    background: #1f242d;
+    overflow: hidden;
+}
+
+section {
+    position: relative;
+    display: inline-block;
+}
+
+.info-wrapper:hover {
+    overflow-y: auto;
+}
+.info-wrapper {
+    width: 230px;
+    background: #2b3240;
+    position: relative;
+    float: left;
+    text-align: center;
+    color: #fff;
+    z-index: 1;
+    height:100vh;
+    box-shadow: 0 8px 17px 2px rgba(0,0,0,0.14), 0 3px 14px 2px rgba(0,0,0,0.12), 0 5px 5px -3px rgba(0,0,0,0.2);
+}
+
+.info-element {
+    color: #b5bece;
+    text-align: center;
+    padding: 12px 0;
+    border-bottom: 1px solid;
+    transition: 0.2s ease-in-out;
+}
+
+.info-wrapper .info-element{
+    border-bottom: 1px solid #1e2431;
+}
+
+.info-element.copyrights-element p {
+
+    font-size: 12px;
+    margin: 10px 0;
+    text-align: left;
+    padding: 0 10px;
+    line-height: 16px;
+
+}
+
+.info-element.copyrights-element {
+
+    background-color: #1f242d;
+
+}
+
+.info-element.copyrights-element p a {
+
+    color: #fff;
+
+}
+
+.info-wrapper .info-element div:nth-child(2){
+    font-weight: bold;
+    margin-top: 0;
+    color: #ffffff;
+}
+
+.info-wrapper .info-element div:nth-child(2).countryN{
+    color:#ffffff;
+    background:#eb5569;
+    border-radius: 2px;
+    display: inline-block;
+    padding: 5px 15px;
+}
+
+.info-wrapper .info-element div:nth-child(2).totalC,.info-wrapper .info-element div:nth-child(2).totalA,.info-wrapper .info-element div:nth-child(2).newC{
+    color: #f5a83d;
+    border-radius: 2px;
+    display: inline-block;
+    padding: 5px 15px;
+}
+
+.info-wrapper .info-element div:nth-child(2).totalR{
+    color: #4CAF50;
+    border-radius: 2px;
+    display: inline-block;
+    padding: 5px 15px;
+}
+
+.info-wrapper .info-element div:nth-child(2).totalD,.info-wrapper .info-element div:nth-child(2).newD{
+    color: #f5403d;
+    border-radius: 2px;
+    display: inline-block;
+    padding: 5px 15px;
+}
+
+.info-wrapper .info-element div:nth-child(2).totalD,.info-wrapper .info-element div:nth-child(2).newD{
+    color: #f5403d;
+    border-radius: 2px;
+    display: inline-block;
+    padding: 5px 15px;
+}
+
+.charts-wrapper {
+    width: calc(100% - 200px - 176px);
+    position: relative;
+    float: left;
+    height: 100vh;
+    overflow: auto;
+}
+
+.chart {
+    width:33.333%;
+    height: 50vh;
+    position: relative;
+    float: left;
+}
+
+.openMap.active {
+    transform: scale(1);
+}
+.openMap {
+    position: fixed;
+    width: auto;
+    height: 50px;
+    border-radius: 2px;
+    right: 20px;
+    bottom: 20px;
+    background: #ffffff;
+    color: #1f242d;
+    text-align: center;
+    padding: 0 25px;
+    line-height: 50px;
+    cursor: pointer;
+    z-index: 1;
+    transform: scale(0);
+    box-shadow: 0 8px 17px 2px rgba(0,0,0,0.14), 0 3px 14px 2px rgba(0,0,0,0.12), 0 5px 5px -3px rgba(0,0,0,0.2);
+    transition: 0.2s ease-in-out;
+}
+
+/*.openMap:hover {*/
+/*    transform: scale(1.1);*/
+/*    box-shadow: 0 16px 24px 2px rgba(0,0,0,0.14), 0 6px 30px 5px rgba(0,0,0,0.12), 0 8px 10px -7px rgba(0,0,0,0.2);*/
+
+/*}*/
+
+.mapWrapper.active {
+    margin-left: 0;
+}
+
+.mapWrapper {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    margin-left: -100vw;
+    background: #1f242d;
+    transition: margin-left 0.5s ease-in-out;
+}
+
+.map-overlay.active {
+    opacity: 1;
+    transition:0.2s ease-in-out;
+}
+
+.map-overlay {
+
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    background: radial-gradient(ellipse closest-side, rgba(0, 0, 0, 0), rgba(31, 36, 45, 1));
+    pointer-events: none;
+    transition:0.2s ease-in-out ;
+
+}
+
+.grid-lines {
+
+    background-color: transparent;
+    background: linear-gradient(0deg, transparent 9%, rgba(255, 255, 255, .2) 10%, rgba(255, 255, 255, .2) 12%, transparent 13%, transparent 29%, rgba(255, 255, 255, .1) 30%, rgba(255, 255, 255, .1) 31%, transparent 32%, transparent 49%, rgba(255, 255, 255, .1) 50%, rgba(255, 255, 255, .1) 51%, transparent 52%, transparent 69%, rgba(255, 255, 255, .1) 70%, rgba(255, 255, 255, .1) 71%, transparent 72%, transparent 89%, rgba(255, 255, 255, .1) 90%, rgba(255, 255, 255, .1) 91%, transparent 92%, transparent), linear-gradient(90deg, transparent 9%, rgba(255, 255, 255, .2) 10%, rgba(255, 255, 255, .2) 12%, transparent 13%, transparent 29%, rgba(255, 255, 255, .1) 30%, rgba(255, 255, 255, .1) 31%, transparent 32%, transparent 49%, rgba(255, 255, 255, .1) 50%, rgba(255, 255, 255, .1) 51%, transparent 52%, transparent 69%, rgba(255, 255, 255, .1) 70%, rgba(255, 255, 255, .1) 71%, transparent 72%, transparent 89%, rgba(255, 255, 255, .1) 90%, rgba(255, 255, 255, .1) 91%, transparent 92%, transparent);
+    background-size: auto, auto;
+    height: 100%;
+    background-size: 50px 50px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    opacity: 0.2;
+    z-index: 0;
+    pointer-events: none;
+
+}
+
+.svgMapWrapper {
+    width: 100vw!important;
+    height: 100vh!important;
+}
+
+.mapWrapper > .svgMapWrapper > svg {
+    margin: auto;
+    text-align: center;
+    position: relative;
+    display: block;
+    width: 100vw;
+    height: 100vh;
+}
+
+.mapWrapper > .svgMapWrapper > svg > path:hover {
+    fill: #e3e3e3!important;
+    filter: drop-shadow(0 10px 5px rgba(0, 0, 0, 0.3))!important;
+    -webkit-filter: drop-shadow(0 10px 5px rgba(0, 0, 0, 0.3))!important;
+}
+
+.mapWrapper > .svgMapWrapper > svg > path {
+    pointer-events: none;
+    cursor: none;
+    stroke: #000000;
+    stroke-width: 0.1px;
+    transition: 0.1s ease-in-out;
+    fill: #2b3240;
+}
+
+.mapWrapper.active > .svgMapWrapper > svg > path {
+    cursor: pointer;
+    pointer-events: auto;
+}
+
+.mapIndicator {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #1f242d;
+    width: 190px;
+    color: #fff;
+    padding: 10px 10px 0;
+    border-radius: 4px;
+    z-index: 1;
+    box-shadow: 0 8px 17px 2px rgba(0,0,0,0.14), 0 3px 14px 2px rgba(0,0,0,0.12), 0 5px 5px -3px rgba(0,0,0,0.2);
+}
+
+.indicator-gradient {
+    width: 65px;
+    height: 15px;
+}
+.indicator span {
+    margin-left: 5px;
+    line-height: 15px;
+}
+.indicator > * {
+    display: inline-block;
+}
+.indicator {
+    width: 100%;
+    display: inline-block;
+    margin-bottom:5px
+}
+
+.low-gradient{
+    background: linear-gradient(90deg, rgba(245, 177, 61,1) 0%,rgba(245, 141, 61,1) 100%);
+}
+.medium-gradient{
+    background: linear-gradient(90deg, rgba(245, 141, 61,1) 0%, rgba(228, 108, 45,1) 100%);
+}
+.high-gradient{
+    background: linear-gradient(90deg, rgba(228, 108, 45,1) 0%, rgba(245, 64, 61,1) 100%);
+}
+.no-gradient{
+    background: #2b3240;
+}
+
+.sourcesIndicator {
+
+    position: absolute;
+    bottom: 0;
+    left: 230px;
+    background: #1f242dd9;
+    width: calc(100vw - 245px);
+    color: #fff;
+    padding: 15px 15px 5px;
+    border-radius: 4px;
+    z-index: 1;
+    font-size: 12px;
+
+}
+
+.timeFetched {
+    display: inline-block;
+    margin-left: 5px;
+    color: #eb5569;
+    font-weight: bold;
+}
+
+.sources-p{
+    line-height: 18px;
+    margin-bottom: 2px;
+}
+
+.mobile-countries-wrapper {
+    position: absolute;
+    top: 136px;
+    right: 10px;
+    background: #1f242d;
+    width: 190px;
+    color: #fff;
+    padding: 10px 10px 0;
+    border-radius: 4px;
+    z-index: 1;
+    box-shadow: 0 8px 17px 2px rgba(0,0,0,0.14), 0 3px 14px 2px rgba(0,0,0,0.12), 0 5px 5px -3px rgba(0,0,0,0.2);
+    transition: 0.2s ease-in-out 0.4s;
+}
+
+.panel-active .mobile-countries-wrapper {
+    margin-right: calc(-190px - 30px);
+    transition: 0.2s ease-in-out;
+}
+
+.countries-select {
+    position: relative;
+    height: calc(100vh - 136px - 118px);
+    overflow: auto;
+}
+.mobile-countries-wrapper .country.selected {
+    background: #222b40;
+}
+.mobile-countries-wrapper .country {
+    padding: 0.5rem;
+    border-bottom: 1px solid #1e2431;
+    transition: 0.2s ease-in-out;
+    overflow: hidden;
+    pointer-events: none;
+}
+.mobile-countries-wrapper .country.not-matched{
+    height: 0px;
+    padding: 0 1rem;
+    border-bottom: 0;
+}
+.mobile-countries-wrapper .country.matched{
+}
+
+.show-stats-btn {
+    position: relative;
+    width: calc(100vw - 170px);
+    height: 50px;
+    border-radius: 0;
+    right: 0;
+    bottom: 0;
+    background: #ffffff;
+    display: none;
+    color: #1f242d;
+    text-align: center;
+    line-height: 50px;
+    cursor: pointer;
+    z-index: 1;
+    box-shadow: 0 8px 17px 2px rgba(0,0,0,0.14), 0 3px 14px 2px rgba(0,0,0,0.12), 0 5px 5px -3px rgba(0,0,0,0.2);
+    transition: 0.2s ease-in-out;
+}
+
+input.autocomplete {
+    padding: 0.2em;
+    margin: 0.2em;
+    position: relative;
+    display: none;
+    background: #fff;
+    height: 30px;
+    border: 0;
+    width: calc(100% - 0.8em);
+    border-bottom: 1px solid #fff;
+}
+
+.stats {
+
+    width: 100%;
+}
+.stats > * {
+    display: inline-block;
+    margin-right: 6px;
+}
+
+span.couR{
+    color: #4CAF50
+}
+span.couD{
+    color: #f5403d;
+}
+span.couC{
+    color: #f5a83d;
+}
+
+
+@media only screen and (max-width: 900px) {
+    .chart {
+        width: 100% !important;
+    }
+
+    .info-wrapper {
+        width: 170px;
+        display:inline-block;
+        transition: 0.2s ease-in-out;
+    }
+
+    .stats-active .info-wrapper {
+        margin-left: -170px;
+    }
+
+    img.logo {
+        width: 170px;
+    }
+
+    .mapWrapper {
+        display: none;
+    }
+
+    .stats-active .mobile-countries-wrapper {
+
+        margin-left: calc(100vw + 170px);
+    }
+
+    .charts-wrapper {
+        width: 100vw;
+        position: absolute;
+        padding: 2rem 0;
+        float: left;
+        height: calc(100vh - 50px);
+        overflow: auto;
+    }
+
+    .stats-active .show-stats-btn {
+        width: 100vw;
+        margin-left: calc(-100vw - 170px);
+    }
+
+    input.autocomplete{
+        display: inline-block;
+    }
+
+    .mobile-countries-wrapper{
+        display:inline-block;
+        width: calc(100vw - 170px);
+        top: unset;
+        right: unset;
+        height: 100vh;
+        padding: 0;
+    }
+
+    .countries-select {
+        height: calc(100vh - 50px - 30px - 0.8em);
+    }
+
+    .show-stats-btn {
+        display: block;
+    }
+
+    .mobile-countries-wrapper .country {
+        pointer-events: auto;
+    }
+}

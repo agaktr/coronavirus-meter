@@ -1,9 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" >
 <head>
     <meta charset="UTF-8">
-    <title>Virus Metrics</title>
-    <link href="css/style.css" rel="stylesheet">
+    <title>Coronavirus Global Statistics</title>
+    <meta name="description" content="This something giorgos">
+    <meta name="author" content="Apto OE">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!--    <link href="css/style.css" rel="stylesheet">-->
+    <link href="css/style.min.css" rel="stylesheet">
 
 </head>
 <body>
@@ -12,13 +17,15 @@
 
     <div class="info-wrapper">
         <div class="info-element">
+            <a href="https://coronavirus-meter.com/">
+
+                <img class="logo" src="../logo.png" alt="coronavirus-meter logo" width="220" height="110">
+            </a>
+        </div>
+        <div class="info-element">
             <div>Country</div>
             <div class="countryN"></div>
         </div>
-<!--        <div class="info-element">-->
-<!--            <div>Last Update</div>-->
-<!--            <div class="timeFetched"></div>-->
-<!--        </div>-->
 
         <div class="info-element">
             <div>Confirmed Cases</div>
@@ -48,7 +55,14 @@
             <div>Cases per million</div>
             <div class="perM"></div>
         </div>
+        <div class="info-element copyrights-element">
+            <p>Coronavirus Meter is a non-profit Open Source Platform.</p>
+            <p>Designed and Developed by <a href="https://apto.gr">APTO OE</a></p>
+            <p>Logo made by <a href="https://www.instagram.com/zero_designs_">@zero_designs_</a></p>
+        </div>
     </div>
+
+
 
     <div class="charts-wrapper">
 
@@ -78,17 +92,183 @@
         </div>
     </div>
 
+    <div class="mobile-countries-wrapper">
+        <input class="autocomplete" type="text" placeholder="Search">
+        <div class="countries-select">
+            <div class="country" data-value="Thailand">Thailand</div>
+            <div class="country" data-value="Japan">Japan</div>
+            <div class="country" data-value="Singapore">Singapore</div>
+            <div class="country" data-value="Nepal">Nepal</div>
+            <div class="country" data-value="Malaysia">Malaysia</div>
+            <div class="country" data-value="Canada">Canada</div>
+            <div class="country" data-value="Australia">Australia</div>
+            <div class="country" data-value="Cambodia">Cambodia</div>
+            <div class="country" data-value="Sri Lanka">Sri Lanka</div>
+            <div class="country" data-value="Germany">Germany</div>
+            <div class="country" data-value="Finland">Finland</div>
+            <div class="country" data-value="United Arab Emirates">United Arab Emirates</div>
+            <div class="country" data-value="Philippines">Philippines</div>
+            <div class="country" data-value="India">India</div>
+            <div class="country" data-value="Italy">Italy</div>
+            <div class="country" data-value="Sweden">Sweden</div>
+            <div class="country" data-value="Spain">Spain</div>
+            <div class="country" data-value="Belgium">Belgium</div>
+            <div class="country" data-value="Egypt">Egypt</div>
+            <div class="country" data-value="Lebanon">Lebanon</div>
+            <div class="country" data-value="Iraq">Iraq</div>
+            <div class="country" data-value="Oman">Oman</div>
+            <div class="country" data-value="Afghanistan">Afghanistan</div>
+            <div class="country" data-value="Bahrain">Bahrain</div>
+            <div class="country" data-value="Kuwait">Kuwait</div>
+            <div class="country" data-value="Algeria">Algeria</div>
+            <div class="country" data-value="Croatia">Croatia</div>
+            <div class="country" data-value="Switzerland">Switzerland</div>
+            <div class="country" data-value="Austria">Austria</div>
+            <div class="country" data-value="Israel">Israel</div>
+            <div class="country" data-value="Pakistan">Pakistan</div>
+            <div class="country" data-value="Brazil">Brazil</div>
+            <div class="country" data-value="Georgia">Georgia</div>
+            <div class="country" data-value="Greece">Greece</div>
+            <div class="country" data-value="North Macedonia">North Macedonia</div>
+            <div class="country" data-value="Norway">Norway</div>
+            <div class="country" data-value="Romania">Romania</div>
+            <div class="country" data-value="Estonia">Estonia</div>
+            <div class="country" data-value="San Marino">San Marino</div>
+            <div class="country" data-value="Belarus">Belarus</div>
+            <div class="country" data-value="Iceland">Iceland</div>
+            <div class="country" data-value="Lithuania">Lithuania</div>
+            <div class="country" data-value="Mexico">Mexico</div>
+            <div class="country" data-value="New Zealand">New Zealand</div>
+            <div class="country" data-value="Nigeria">Nigeria</div>
+            <div class="country" data-value="Ireland">Ireland</div>
+            <div class="country" data-value="Luxembourg">Luxembourg</div>
+            <div class="country" data-value="Monaco">Monaco</div>
+            <div class="country" data-value="Qatar">Qatar</div>
+            <div class="country" data-value="Ecuador">Ecuador</div>
+            <div class="country" data-value="Azerbaijan">Azerbaijan</div>
+            <div class="country" data-value="Armenia">Armenia</div>
+            <div class="country" data-value="Dominican Republic">Dominican Republic</div>
+            <div class="country" data-value="Indonesia">Indonesia</div>
+            <div class="country" data-value="Portugal">Portugal</div>
+            <div class="country" data-value="Andorra">Andorra</div>
+            <div class="country" data-value="Latvia">Latvia</div>
+            <div class="country" data-value="Morocco">Morocco</div>
+            <div class="country" data-value="Saudi Arabia">Saudi Arabia</div>
+            <div class="country" data-value="Senegal">Senegal</div>
+            <div class="country" data-value="Argentina">Argentina</div>
+            <div class="country" data-value="Chile">Chile</div>
+            <div class="country" data-value="Jordan">Jordan</div>
+            <div class="country" data-value="Ukraine">Ukraine</div>
+            <div class="country" data-value="Hungary">Hungary</div>
+            <div class="country" data-value="Liechtenstein">Liechtenstein</div>
+            <div class="country" data-value="Poland">Poland</div>
+            <div class="country" data-value="Tunisia">Tunisia</div>
+            <div class="country" data-value="Bosnia and Herzegovina">Bosnia and Herzegovina</div>
+            <div class="country" data-value="Slovenia">Slovenia</div>
+            <div class="country" data-value="South Africa">South Africa</div>
+            <div class="country" data-value="Bhutan">Bhutan</div>
+            <div class="country" data-value="Cameroon">Cameroon</div>
+            <div class="country" data-value="Colombia">Colombia</div>
+            <div class="country" data-value="Costa Rica">Costa Rica</div>
+            <div class="country" data-value="Peru">Peru</div>
+            <div class="country" data-value="Serbia">Serbia</div>
+            <div class="country" data-value="Slovakia">Slovakia</div>
+            <div class="country" data-value="Togo">Togo</div>
+            <div class="country" data-value="Malta">Malta</div>
+            <div class="country" data-value="Martinique">Martinique</div>
+            <div class="country" data-value="Bulgaria">Bulgaria</div>
+            <div class="country" data-value="Maldives">Maldives</div>
+            <div class="country" data-value="Bangladesh">Bangladesh</div>
+            <div class="country" data-value="Paraguay">Paraguay</div>
+            <div class="country" data-value="Albania">Albania</div>
+            <div class="country" data-value="Cyprus">Cyprus</div>
+            <div class="country" data-value="Brunei">Brunei</div>
+            <div class="country" data-value="US">US</div>
+            <div class="country" data-value="Burkina Faso">Burkina Faso</div>
+            <div class="country" data-value="Holy See">Holy See</div>
+            <div class="country" data-value="Mongolia">Mongolia</div>
+            <div class="country" data-value="Panama">Panama</div>
+            <div class="country" data-value="China">China</div>
+            <div class="country" data-value="Iran">Iran</div>
+            <div class="country" data-value="Korea, South">Korea, South</div>
+            <div class="country" data-value="France">France</div>
+            <div class="country" data-value="Cruise Ship">Cruise Ship</div>
+            <div class="country" data-value="Denmark">Denmark</div>
+            <div class="country" data-value="Czechia">Czechia</div>
+            <div class="country" data-value="Taiwan*">Taiwan*</div>
+            <div class="country" data-value="Vietnam">Vietnam</div>
+            <div class="country" data-value="Russia">Russia</div>
+            <div class="country" data-value="Moldova">Moldova</div>
+            <div class="country" data-value="Bolivia">Bolivia</div>
+            <div class="country" data-value="Honduras">Honduras</div>
+            <div class="country" data-value="United Kingdom">United Kingdom</div>
+            <div class="country" data-value="Congo (Kinshasa)">Congo (Kinshasa)</div>
+            <div class="country" data-value="Cote d'Ivoire">Cote d'Ivoire</div>
+            <div class="country" data-value="Jamaica">Jamaica</div>
+            <div class="country" data-value="Turkey">Turkey</div>
+            <div class="country" data-value="Cuba">Cuba</div>
+            <div class="country" data-value="Guyana">Guyana</div>
+            <div class="country" data-value="Kazakhstan">Kazakhstan</div>
+            <div class="country" data-value="Ethiopia">Ethiopia</div>
+            <div class="country" data-value="Sudan">Sudan</div>
+            <div class="country" data-value="Guinea">Guinea</div>
+            <div class="country" data-value="Aruba">Aruba</div>
+            <div class="country" data-value="Kenya">Kenya</div>
+            <div class="country" data-value="Antigua and Barbuda">Antigua and Barbuda</div>
+            <div class="country" data-value="Uruguay">Uruguay</div>
+            <div class="country" data-value="Ghana">Ghana</div>
+            <div class="country" data-value="Jersey">Jersey</div>
+            <div class="country" data-value="Namibia">Namibia</div>
+            <div class="country" data-value="Seychelles">Seychelles</div>
+            <div class="country" data-value="Trinidad and Tobago">Trinidad and Tobago</div>
+            <div class="country" data-value="Venezuela">Venezuela</div>
+            <div class="country" data-value="Eswatini">Eswatini</div>
+            <div class="country" data-value="Gabon">Gabon</div>
+            <div class="country" data-value="Guatemala">Guatemala</div>
+            <div class="country" data-value="Guernsey">Guernsey</div>
+            <div class="country" data-value="Mauritania">Mauritania</div>
+            <div class="country" data-value="Rwanda">Rwanda</div>
+            <div class="country" data-value="Saint Lucia">Saint Lucia</div>
+            <div class="country" data-value="Saint Vincent and the Grenadines">Saint Vincent and the Grenadines</div>
+            <div class="country" data-value="Suriname">Suriname</div>
+            <div class="country" data-value="Kosovo">Kosovo</div>
+            <div class="country" data-value="Central African Republic">Central African Republic</div>
+            <div class="country" data-value="Congo (Brazzaville)">Congo (Brazzaville)</div>
+            <div class="country" data-value="Equatorial Guinea">Equatorial Guinea</div>
+            <div class="country" data-value="Uzbekistan">Uzbekistan</div>
+            <div class="country" data-value="Netherlands">Netherlands</div>
+            <div class="country" data-value="Benin">Benin</div>
+            <div class="country" data-value="Greenland">Greenland</div>
+            <div class="country" data-value="Liberia">Liberia</div>
+            <div class="country" data-value="Republic of the Congo">Republic of the Congo</div>
+            <div class="country" data-value="Somalia">Somalia</div>
+            <div class="country" data-value="Tanzania">Tanzania</div>
+            <div class="country" data-value="The Bahamas">The Bahamas</div>
+            <div class="country" data-value="Barbados">Barbados</div>
+            <div class="country" data-value="Montenegro">Montenegro</div>
+            <div class="country" data-value="The Gambia">The Gambia</div>
+        </div>
+        <div class="show-stats-btn">Show Statistics</div>
+    </div>
 
-
-    <div class="openMap">Toggle Map</div>
+    <div class="openMap">Open Map</div>
     <div class="mapWrapper active">
+        <div class="sourcesIndicator">
 
+            <div class="source-element">
+                <div>Last Update  <div class="timeFetched"></div></div>
+                <p class="sources-p">
+                    The historical data is fetched from APIs that combine numerous sources like the World Health Organization (WHO), DXY.cn. Pneumonia, BNO News, National Health Commission of the People’s Republic of China (NHC), China CDC (CCDC), Hong Kong Department of Health, Macau Government, Taiwan CDC, US CDC, Government of Canada, Australia Government Department of Health, European Centre for Disease Prevention and Control (ECDC), Ministry of Health Singapore (MOH),Italy Ministry of Health. The live statistics are fetched from APIs that are directly connected to the worldometers.info database. We are not responsible for the accuracy of any given stat at any given time.
+                </p>
+            </div>
+        </div>
+        <div class="grid-lines"></div>
         <div class="map-overlay"></div>
         <div class="mapIndicator">
-            <div class="indicator"><span>1</span><div class="low-gradient indicator-gradient"></div><span>500 Cases</span></div>
-            <div class="indicator"><span>500</span><div class="medium-gradient indicator-gradient"></div><span>5000 Cases</span></div>
-            <div class="indicator"><span>5000</span><div class="high-gradient indicator-gradient"></div><span>25000+ Cases</span></div>
-            <div class="indicator"><span></span><div class="no-gradient indicator-gradient"></div><span>No statistics</span></div>
+            <div class="indicator"><div class="low-gradient indicator-gradient"></div><span>1 - 500 Cases</span></div>
+            <div class="indicator"><div class="medium-gradient indicator-gradient"></div><span>500 - 5000 Cases</span></div>
+            <div class="indicator"><div class="high-gradient indicator-gradient"></div><span>5000 - 25000+ Cases</span></div>
+            <div class="indicator"><div class="no-gradient indicator-gradient"></div><span>No statistics</span></div>
         </div>
         <div class="svgMapWrapper">
         <svg
@@ -1133,8 +1313,18 @@
 </section>
 
 
-<script src="js/jquery.js"></script>
-<script src="js/chart.js"></script>
-<script src="js/main.js"></script>
+<!--<script src="js/main.js"></script>-->
+<script defer src="js/main.min.js"></script>
+
+<!-- Global site tag (gtag.js) - Google Analytics-->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-161456818-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-161456818-1');
+</script>
+
 </body>
 </html>
