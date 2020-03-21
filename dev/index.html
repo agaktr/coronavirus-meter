@@ -29,6 +29,7 @@
         <div class="info-element">
             <div>Confirmed Cases</div>
             <div class="totalC"></div>
+            <span class="statNote cases-note">+0</span>
         </div>
         <div class="info-element">
             <div>Active Cases</div>
@@ -41,10 +42,12 @@
         <div class="info-element">
             <div>Total recovered</div>
             <div class="totalR"></div>
+            <span class="statNote recovered-note">+0</span>
         </div>
         <div class="info-element">
             <div>Total dead</div>
             <div class="totalD"></div>
+            <span class="statNote death-note">+0</span>
         </div>
         <div class="info-element">
             <div>New Deaths</div>
@@ -255,7 +258,14 @@
         <div class="sourcesIndicator">
 
             <div class="source-element">
-                <div>Last Update  <div class="timeFetched"></div></div>
+                <div>Last Update
+                    <div class="timeFetched"></div>
+                    <ul class="counter-list">
+                        <li><span id="minutes">0</span> Minutes</li>
+                        <li><span id="seconds">0</span> Seconds ago</li>
+                    </ul>
+                    <div class="toggle-sources"> > </div>
+                </div>
                 <p class="sources-p">
                     The historical data is fetched from APIs that combine numerous sources like the World Health Organization (WHO), DXY.cn. Pneumonia, BNO News, National Health Commission of the People’s Republic of China (NHC), China CDC (CCDC), Hong Kong Department of Health, Macau Government, Taiwan CDC, US CDC, Government of Canada, Australia Government Department of Health, European Centre for Disease Prevention and Control (ECDC), Ministry of Health Singapore (MOH),Italy Ministry of Health. The live statistics are fetched from APIs that are directly connected to the worldometers.info database. We are not responsible for the accuracy of any given stat at any given time.
                 </p>

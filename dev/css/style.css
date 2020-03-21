@@ -102,28 +102,21 @@ img.logo {
     color: #f5a83d;
     border-radius: 2px;
     display: inline-block;
-    padding: 5px 15px;
+    padding: 5px 0;
 }
 
 .info-wrapper .info-element div:nth-child(2).totalR{
     color: #4CAF50;
     border-radius: 2px;
     display: inline-block;
-    padding: 5px 15px;
+    padding: 5px 0;
 }
 
 .info-wrapper .info-element div:nth-child(2).totalD,.info-wrapper .info-element div:nth-child(2).newD{
     color: #f5403d;
     border-radius: 2px;
     display: inline-block;
-    padding: 5px 15px;
-}
-
-.info-wrapper .info-element div:nth-child(2).totalD,.info-wrapper .info-element div:nth-child(2).newD{
-    color: #f5403d;
-    border-radius: 2px;
-    display: inline-block;
-    padding: 5px 15px;
+    padding: 5px 0;
 }
 
 .charts-wrapper {
@@ -306,9 +299,9 @@ img.logo {
     color: #fff;
     padding: 15px 15px 5px;
     border-radius: 4px;
-    z-index: 1;
+    z-index: 2;
     font-size: 12px;
-
+    transition: 0.2s ease-in-out;
 }
 
 .timeFetched {
@@ -404,14 +397,18 @@ input.autocomplete {
     margin-right: 6px;
 }
 
-span.couR{
+span.couR,.recovered-note{
     color: #4CAF50
 }
-span.couD{
+span.couD,.death-note{
     color: #f5403d;
 }
-span.couC{
+span.couC,.cases-note{
     color: #f5a83d;
+}
+
+span.statNote {
+    font-size: smaller;
 }
 
 
@@ -482,6 +479,53 @@ span.couC{
         pointer-events: auto;
     }
 }
+ul.counter-list > li {
+    display: inline-block;
+}
+ul.counter-list {
+    display: inline-block;
+    padding: 0 12px;
+    margin: 0;
+}
+.counterAnimationTen{
+    animation: 1s pulse;
+    animation-iteration-count: 10;
+}
+
+.counterAnimationSixty{
+    animation: 1s pulse;
+    animation-iteration-count: 60;
+}
+
+.countryRanimationSixty{
+    animation: 1s pulseRfill;
+    animation-iteration-count: infinite;
+}
+
+.countryCanimationSixty{
+    animation: 1s pulseCfill;
+    animation-iteration-count: infinite;
+}
+
+
+.countryDanimationSixty{
+    animation: 1s pulseDfill;
+    animation-iteration-count: infinite;
+}
+
+.sourcesIndicator.toggled{
+    bottom: -68px;
+}
+
+.toggle-sources.toggled {
+    transform: rotate(-90deg);
+}
+.toggle-sources {
+    cursor: pointer;
+    display: inline-block;
+    transform: rotate(90deg);
+    transition: 0.2s ease-in-out;
+}
 
 @keyframes pulse {
     0% {
@@ -509,12 +553,36 @@ span.couC{
 
 @keyframes pulseRfill {
     0% {
-        fill: #1f242d;
+        fill: #e3e3e3;
     }
     50% {
         fill: #42af50;
     }
     100% {
-        fill: #1f242d;
+        fill: #e3e3e3;
+    }
+}
+
+@keyframes pulseCfill {
+    0% {
+        fill: #e3e3e3;
+    }
+    50% {
+        fill: #f5a83d;
+    }
+    100% {
+        fill: #e3e3e3;
+    }
+}
+
+@keyframes pulseDfill {
+    0% {
+        fill: #e3e3e3;
+    }
+    50% {
+        fill: #f5403d;
+    }
+    100% {
+        fill: #e3e3e3;
     }
 }

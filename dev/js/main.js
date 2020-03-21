@@ -1798,13 +1798,33 @@
  */
 var countriesHistoryData,
     countriesCurrentData,
+    currentDataLive,
     currentTotalData,
     countriesAllData = [],
     countriesAllCurrentData = [],
     lastStatisticsTime,
     todayDate = new Date(),
     todayDateUse = todayDate.getFullYear()+'-'+(todayDate.getMonth()+1)+'-'+todayDate.getDate(),
+    liveCases,
+    liveDeaths,
+    liveRecovered,
+    countDownInterval,
+    didRemoveBlinks,
     svgMap;
+
+/**
+ * Delete all cookies from browser
+ */
+function deleteAllCookies() {
+    var cookies = document.cookie.split(";");
+
+    for (var i = 0; i < cookies.length; i++) {
+        var cookie = cookies[i];
+        var eqPos = cookie.indexOf("=");
+        var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+        document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    }
+}
 
 /**
  * titleCase function that capitalizes strings
@@ -1828,11 +1848,16 @@ function mapData() {
     /**
      * Populate countriesAllData array
      */
+    var totalCases = 0;
+    var totalDeath = 0;
+    var totalRecovered = 0;
+    var totalCasesDone = false;
     $.each(countriesHistoryData,function (countryName,countryDaysData) {
 
         /**
-         * add/refresh today stats
+         * Get advanced stats for each country last day
          */
+        var lastDayAdvancedData = {};
         $.each(countriesCurrentData.countries_stat,function (key,countryCurrentData) {
 
             /**
@@ -1850,46 +1875,115 @@ function mapData() {
                 (countryName === 'Congo (Brazzaville)' && countryCurrentData.country_name === 'Congo') ||
                 (countryName === 'The Bahamas' && countryCurrentData.country_name === 'Bahamas') ||
                 (countryName === 'Gambia, The' && countryCurrentData.country_name === 'Gambia') ||
-                (countryName === 'Saint Vincent and the Grenadines' && countryCurrentData.country_name === 'St. Vincent Grenadines')
+                (countryName === 'Saint Vincent and the Grenadines' && countryCurrentData.country_name === 'St. Vincent Grenadines') ||
+                (countryName === 'Bahamas, The' && countryCurrentData.country_name === 'Bahamas')
             ){
-                countryDaysData[countryDaysData.length] = {
-                    date: todayDateUse,
-                    confirmed: parseInt(countryCurrentData.cases.replace(',','')),
-                    deaths:  parseInt(countryCurrentData.deaths.replace(',','')),
-                    recovered:  parseInt(countryCurrentData.total_recovered.replace(',','')),
+                lastDayAdvancedData = {
                     new_deaths:  parseInt(countryCurrentData.new_deaths.replace(',','')),
                     new_cases:  parseInt(countryCurrentData.new_cases.replace(',','')),
                     serious_critical:  parseInt(countryCurrentData.serious_critical.replace(',','')),
                     active_cases:  parseInt(countryCurrentData.active_cases.replace(',','')),
                     total_cases_per_1m_population:  parseInt(countryCurrentData.total_cases_per_1m_population.replace(',',''))
                 };
+                return false;
             }
         });
+
+        /**
+         * add/refresh today stats
+         */
+        $.each(currentDataLive,function () {
+
+            var countryData = $(this).find('td'),
+                currentCountryName = titleCase(countryData.eq(1).text().toLowerCase());
+
+            /**
+             * Add total cases
+             */
+            if (totalCasesDone === false){
+                if (countryData.eq(2).text().replace(',','') !== '' && countryData.eq(2).text().replace(',','') !== 'Confirmed Case'){
+
+                    totalCases = totalCases + parseInt(countryData.eq(2).text().replace(',',''));
+                    totalDeath = totalDeath + parseInt(countryData.eq(3).text().replace(',',''));
+                    totalRecovered = totalRecovered + parseInt(countryData.eq(4).text().replace(',',''));
+                }
+
+            }
+
+            /**
+             * If exact case and some mapping
+             */
+            if (
+                (currentCountryName === countryName) ||
+                (countryName === 'North Macedonia' && currentCountryName === 'N. Macedonia') ||
+                (countryName === 'Bosnia and Herzegovina' && currentCountryName === 'Bosnia-herzegovina') ||
+                (countryName === 'United Arab Emirates' && currentCountryName === 'Uae') ||
+                (countryName === 'South Africa' && currentCountryName === 'S. Africa') ||
+                (countryName === 'China' && currentCountryName === 'China, Mainland') ||
+                (countryName === 'Antigua and Barbuda' && currentCountryName === 'Antigua And Barbuda') ||
+                (countryName === 'Trinidad and Tobago' && currentCountryName === 'Trinidad And Tobago') ||
+                (countryName === 'Saint Vincent and the Grenadines' && currentCountryName === 'Saint Vincent') ||
+                (countryName === 'Bahamas, The' && currentCountryName === 'Bahamas') ||
+                (countryName === 'US' && currentCountryName === 'United States') ||
+                (countryName === 'Korea, South' && currentCountryName === 'S. Korea') ||
+                (countryName === 'Taiwan*' && currentCountryName === 'Taiwan') ||
+                (countryName === 'United Kingdom' && currentCountryName === 'UK') ||
+                (countryName === 'Holy See' && currentCountryName === 'Vatican City') ||
+                (countryName === 'Congo (Kinshasa)' && currentCountryName === 'Congo') ||
+                (countryName === 'Congo (Brazzaville)' && currentCountryName === 'Congo') ||
+                (countryName === 'The Bahamas' && currentCountryName === 'Bahamas') ||
+                (countryName === 'Gambia, The' && currentCountryName === 'Gambia') ||
+                (countryName === 'Saint Vincent and the Grenadines' && currentCountryName === 'St. Vincent Grenadines')
+            ) {
+
+
+
+                countryDaysData[countryDaysData.length] = {
+                    date: todayDateUse,
+                    confirmed: parseInt(countryData.eq(2).text().replace(',','')),
+                    deaths: parseInt(countryData.eq(3).text().replace(',','')),
+                    recovered: parseInt(countryData.eq(4).text().replace(',','')),
+                    liveCases: 0,
+                    liveDeaths: 0,
+                    liveRecovered: 0,
+                    ...lastDayAdvancedData
+                };
+
+            }
+        });
+
         /**
          * Add full array to countriesAllCurrentData
          */
         countriesAllData[countryName] = countryDaysData;
+
+        /**
+         * Finish on first iteration
+         */
+        totalCasesDone = true;
     });
 
     /**
      * Create currentAllStats
      */
-
     countriesAllCurrentData['World'] = {
         date: todayDateUse,
-        confirmed: parseInt(currentTotalData.total_cases.replace(',','')),
-        deaths:  parseInt(currentTotalData.total_deaths.replace(',','')),
-        recovered:  parseInt(currentTotalData.total_recovered.replace(',','')),
+        confirmed: totalCases,
+        deaths:  totalDeath,
+        recovered:  totalRecovered,
         new_deaths:  parseInt(currentTotalData.new_deaths.replace(',','')),
         new_cases:  parseInt(currentTotalData.new_cases.replace(',','')),
         serious_critical:  'N/A',
         active_cases:  'N/A',
+        liveCases: 0,
+        liveDeaths: 0,
+        liveRecovered: 0,
         total_cases_per_1m_population:  'N/A'
     };
     countriesAllCurrentData['World'].active_cases = countriesAllCurrentData['World'].confirmed - countriesAllCurrentData['World'].deaths - countriesAllCurrentData['World'].recovered;
     countriesAllCurrentData['World'].total_cases_per_1m_population = parseInt(countriesAllCurrentData['World'].confirmed*1000000/7700000000);
 
-    updatePanelData('World',countriesAllCurrentData['World']);
+    updateLivePanelData('World',countriesAllCurrentData['World']);
 }
 
 /**
@@ -2065,7 +2159,7 @@ function loadCharts(countryName,data) {
     /**
      * Load the stats of that country to the info box
      */
-    updatePanelData(countryName,data[data.length-1]);
+    updateLivePanelData(countryName,data[data.length-1]);
 
     /**
      * chart same vars
@@ -2290,25 +2384,314 @@ function loadCharts(countryName,data) {
         },
     });
 
+}
+
+function startCountdown() {
+
+    if (undefined !== countDownInterval){
+
+        clearInterval(countDownInterval);
+    }
+
+    //Counter Countdown
+    var second = 1000,
+        minute = second * 60,
+        hour = minute * 60,
+        day = hour * 24;
+
+    var countDown = new Date(currentDataLive.eq(1).find('td').eq(0).text()).getTime();
+
+    countDownInterval = setInterval(function() {
+
+        if (typeof(document.getElementById('minutes')) != 'undefined' && document.getElementById('minutes') != null) {
+            var now = new Date().getTime(),
+                distance = now - countDown;
+            document.getElementById('minutes').innerText = Math.floor((distance % (hour)) / (minute));
+            document.getElementById('seconds').innerText = Math.floor((distance % (minute)) / second);
+        }else{
+            clearInterval(countDownInterval);
+        }
+    }, second);
+}
 
 
+/**
+ * This function updates the panel data on demand
+ */
+function changeLivePanelStats(countryName,lastStats){
 
+    /**
+     * Remove Live update
+     */
+    if (lastStats.liveCases > 0 || lastStats.liveRecovered > 0 || lastStats.liveDeaths > 0){
+
+        if (didRemoveBlinks === false){
+            $('path').removeClass('countryCanimationSixty countryRanimationSixty countryDanimationSixty');
+            didRemoveBlinks = true;
+        }
+    }
+
+    /**
+     * Some Country Mapping
+     */
+    if (countryName === 'US'){countryName = 'United States';}
+
+    if (lastStats.liveCases > 0){
+        $('path[title="'+countryName+'"]').addClass('countryCanimationSixty');
+    }
+    if (lastStats.liveRecovered > 0){
+        $('path[title="'+countryName+'"]').addClass('countryRanimationSixty');
+    }
+    if (lastStats.liveDeaths > 0){
+        $('path[title="'+countryName+'"]').addClass('countryDanimationSixty');
+    }
+
+    if (lastStats.liveCases > 0 || lastStats.liveRecovered > 0 || lastStats.liveDeaths > 0){
+
+        if ($('path[title="'+countryName+'"]').length === 0){
+           console.log(countryName);
+        }
+    }
 }
 
 /**
  * This function updates the panel data on demand
  */
-function updatePanelData(countryName,lastStats){
+function updateLivePanelData(countryName,lastStats){
+
+    $('.info-element').removeClass('counterAnimationTen counterAnimationSixty');
 
     $('.timeFetched').text(lastStatisticsTime);
     $('.countryN').text(countryName);
     $('.totalC').text(lastStats.confirmed);
+    $('.cases-note').text('+'+lastStats.liveCases);
     $('.totalA').text(lastStats.active_cases);
     $('.totalR').text(lastStats.recovered);
+    $('.recovered-note').text('+'+lastStats.liveRecovered);
     $('.totalD').text(lastStats.deaths);
+    $('.death-note').text('+'+lastStats.liveDeaths);
     $('.newC').text(lastStats.new_cases);
     $('.newD').text(lastStats.new_deaths);
     $('.perM').text(lastStats.total_cases_per_1m_population);
+
+    if (lastStats.liveCases > 0){
+        $('.cases-note').closest('.info-element').addClass('counterAnimationSixty');
+    }
+    if (lastStats.liveRecovered > 0){
+        $('.recovered-note').closest('.info-element').addClass('counterAnimationSixty');
+    }
+    if (lastStats.liveDeaths > 0){
+        $('.death-note').closest('.info-element').addClass('counterAnimationSixty');
+    }
+    startCountdown();
+}
+
+/**
+ * This function is responsible for the live updates in the dashboard!
+ */
+function refreshStatistics() {
+    deleteAllCookies();
+    var settings = {
+        "async": true,
+        "cache": false,
+        "crossdomain": true,
+        "url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQuDj0R6K85sdtI8I-Tc7RCx8CnIxKUQue0TCUdrFOKDw9G3JRtGhl64laDd3apApEvIJTdPFJ9fEUL/pubhtml?gid=0&single=true",
+        "method": "GET",
+    };
+
+    $.ajax(settings).done(function (response) {
+
+        currentDataLive = $(response).find('.waffle tr');
+        checkForChanges();
+    });
+}
+
+
+/**
+ * This function is responsible for checking any changes in the data!
+ */
+function checkForChanges() {
+
+    /**
+     * Populate countriesAllData array
+     */
+    var totalCases = 0;
+    var totalDeath = 0;
+    var totalRecovered = 0;
+    var totalCasesDone = false;
+    didRemoveBlinks = false;
+    /**
+     * Check if obsolete
+     */
+    $.each(currentDataLive,function () {
+
+        var countryData = $(this).find('td');
+
+        /**
+         * Add total cases
+         */
+        if (countryData.eq(2).text().replace(',','') !== '' && countryData.eq(2).text().replace(',','') !== 'Confirmed Case') {
+
+            totalCases = totalCases + parseInt(countryData.eq(2).text().replace(',',''));
+            totalDeath = totalDeath + parseInt(countryData.eq(3).text().replace(',',''));
+            totalRecovered = totalRecovered + parseInt(countryData.eq(4).text().replace(',',''));
+        }
+    });
+
+    /**
+     * If less stat than before cache limit exception like
+     */
+    if (
+        (
+            countriesAllCurrentData['World'].confirmed > totalCases ||
+            countriesAllCurrentData['World'].deaths > totalDeath ||
+            countriesAllCurrentData['World'].recovered > totalRecovered
+        ) ||
+        (
+            countriesAllCurrentData['World'].confirmed === totalCases &&
+            countriesAllCurrentData['World'].recovered === totalRecovered &&
+            countriesAllCurrentData['World'].deaths === totalDeath
+        )
+    ){
+        console.log('Cache Miss');
+        return false;
+    }
+
+    $.each(countriesHistoryData,function (countryName,countryDaysData) {
+
+        /**
+         * Get advanced stats for each country last day
+         */
+        var lastDayAdvancedData = {};
+        $.each(countriesCurrentData.countries_stat,function (key,countryCurrentData) {
+
+            /**
+             * If exact case and some mapping
+             */
+            if (
+                (countryCurrentData.country_name === countryName) ||
+                (countryName === 'United Arab Emirates' && countryCurrentData.country_name === 'Saudi Arabia') ||
+                (countryName === 'US' && countryCurrentData.country_name === 'USA') ||
+                (countryName === 'Korea, South' && countryCurrentData.country_name === 'S. Korea') ||
+                (countryName === 'Taiwan*' && countryCurrentData.country_name === 'Taiwan') ||
+                (countryName === 'United Kingdom' && countryCurrentData.country_name === 'UK') ||
+                (countryName === 'Holy See' && countryCurrentData.country_name === 'Vatican City') ||
+                (countryName === 'Congo (Kinshasa)' && countryCurrentData.country_name === 'Congo') ||
+                (countryName === 'Congo (Brazzaville)' && countryCurrentData.country_name === 'Congo') ||
+                (countryName === 'The Bahamas' && countryCurrentData.country_name === 'Bahamas') ||
+                (countryName === 'Gambia, The' && countryCurrentData.country_name === 'Gambia') ||
+                (countryName === 'Saint Vincent and the Grenadines' && countryCurrentData.country_name === 'St. Vincent Grenadines') ||
+                (countryName === 'Bahamas, The' && countryCurrentData.country_name === 'Bahamas')
+            ){
+                lastDayAdvancedData = {
+                    new_deaths:  parseInt(countryCurrentData.new_deaths.replace(',','')),
+                    new_cases:  parseInt(countryCurrentData.new_cases.replace(',','')),
+                    serious_critical:  parseInt(countryCurrentData.serious_critical.replace(',','')),
+                    active_cases:  parseInt(countryCurrentData.active_cases.replace(',','')),
+                    total_cases_per_1m_population:  parseInt(countryCurrentData.total_cases_per_1m_population.replace(',',''))
+                };
+                return false;
+            }
+        });
+
+        /**
+         * add/refresh today stats
+         */
+        $.each(currentDataLive,function () {
+
+            var countryData = $(this).find('td'),
+                currentCountryName = titleCase(countryData.eq(1).text().toLowerCase());
+
+            /**
+             * If exact case and some mapping
+             */
+            if (
+                (currentCountryName === countryName) ||
+                (countryName === 'North Macedonia' && currentCountryName === 'N. Macedonia') ||
+                (countryName === 'Bosnia and Herzegovina' && currentCountryName === 'Bosnia-herzegovina') ||
+                (countryName === 'United Arab Emirates' && currentCountryName === 'Uae') ||
+                (countryName === 'South Africa' && currentCountryName === 'S. Africa') ||
+                (countryName === 'China' && currentCountryName === 'China, Mainland') ||
+                (countryName === 'Antigua and Barbuda' && currentCountryName === 'Antigua And Barbuda') ||
+                (countryName === 'Trinidad and Tobago' && currentCountryName === 'Trinidad And Tobago') ||
+                (countryName === 'Saint Vincent and the Grenadines' && currentCountryName === 'Saint Vincent') ||
+                (countryName === 'Bahamas, The' && currentCountryName === 'Bahamas') ||
+                (countryName === 'US' && currentCountryName === 'United States') ||
+                (countryName === 'Korea, South' && currentCountryName === 'S. Korea') ||
+                (countryName === 'Taiwan*' && currentCountryName === 'Taiwan') ||
+                (countryName === 'United Kingdom' && currentCountryName === 'UK') ||
+                (countryName === 'Holy See' && currentCountryName === 'Vatican City') ||
+                (countryName === 'Congo (Kinshasa)' && currentCountryName === 'Congo') ||
+                (countryName === 'Congo (Brazzaville)' && currentCountryName === 'Congo') ||
+                (countryName === 'The Bahamas' && currentCountryName === 'Bahamas') ||
+                (countryName === 'Gambia, The' && currentCountryName === 'Gambia') ||
+                (countryName === 'Saint Vincent and the Grenadines' && currentCountryName === 'St. Vincent Grenadines')
+            ) {
+
+                /**
+                 * We check if old different than new in live
+                 */
+                var liveCountryCases = parseInt(countryData.eq(2).text().replace(',','')) - countryDaysData[countryDaysData.length-1].confirmed,
+                    liveCountryDeaths = parseInt(countryData.eq(3).text().replace(',','')) - countryDaysData[countryDaysData.length-1].deaths,
+                    liveCountryRecovered =parseInt(countryData.eq(4).text().replace(',','')) - countryDaysData[countryDaysData.length-1].recovered;
+
+                countryDaysData[countryDaysData.length-1] = {
+                    date: todayDateUse,
+                    confirmed: parseInt(countryData.eq(2).text().replace(',','')),
+                    deaths: parseInt(countryData.eq(3).text().replace(',','')),
+                    recovered: parseInt(countryData.eq(4).text().replace(',','')),
+                    liveCases:  liveCountryCases,
+                    liveDeaths:  liveCountryDeaths,
+                    liveRecovered:  liveCountryRecovered,
+                    ...lastDayAdvancedData
+                };
+
+            }
+
+            changeLivePanelStats(countryName,countryDaysData[countryDaysData.length-1]);
+        });
+
+        /**
+         * Add full array to countriesAllCurrentData
+         */
+        countriesAllData[countryName] = countryDaysData;
+
+        /**
+         * Finish on first iteration
+         */
+        totalCasesDone = true;
+    });
+
+    liveCases = totalCases - countriesAllCurrentData['World'].confirmed;
+    liveDeaths = totalDeath - countriesAllCurrentData['World'].deaths;
+    liveRecovered =totalRecovered - countriesAllCurrentData['World'].recovered;
+
+    /**
+     * Create currentAllStats
+     */
+    countriesAllCurrentData['World'] = {
+        date: todayDateUse,
+        confirmed: totalCases,
+        deaths:  totalDeath,
+        recovered:  totalRecovered,
+        new_deaths:  parseInt(currentTotalData.new_deaths.replace(',','')),
+        new_cases:  parseInt(currentTotalData.new_cases.replace(',','')),
+        serious_critical:  'N/A',
+        active_cases:  'N/A',
+        liveCases:  liveCases,
+        liveDeaths:  liveDeaths,
+        liveRecovered:  liveRecovered,
+        total_cases_per_1m_population:  'N/A'
+    };
+    countriesAllCurrentData['World'].active_cases = countriesAllCurrentData['World'].confirmed - countriesAllCurrentData['World'].deaths - countriesAllCurrentData['World'].recovered;
+    countriesAllCurrentData['World'].total_cases_per_1m_population = parseInt(countriesAllCurrentData['World'].confirmed*1000000/7700000000);
+
+    if ($('body').hasClass('panel-active')){
+
+    }else{
+        updateLivePanelData('World',countriesAllCurrentData['World']);
+    }
+
 }
 
 /**
@@ -2331,11 +2714,15 @@ function doTheInit() {
         setTimeout(doTheInit,1);//wait 50 millisecnds then recheck
         return;
     }
+    if (undefined === currentDataLive) {//we want it to match
+        setTimeout(doTheInit,1);//wait 50 millisecnds then recheck
+        return;
+    }
 
     /**
      * Update time
      */
-    lastStatisticsTime = countriesCurrentData.statistic_taken_at;
+    lastStatisticsTime = currentDataLive.eq(1).find('td').eq(0).text();
 
     /**
      * Map the data from apis to main array
@@ -2373,6 +2760,14 @@ function doTheInit() {
         });
 
         /**
+         * Toggle sorces
+         */
+        body.on('click','.toggle-sources',function () {
+            $(this).toggleClass('toggled');
+            body.find('.sourcesIndicator').toggleClass('toggled');
+        });
+
+        /**
          * Color change on Map functions
          */
         svgMap.on('mouseenter','path',function () {
@@ -2400,9 +2795,9 @@ function doTheInit() {
              */
             if (undefined !== countryDaysData){
 
-                updatePanelData(countryName,countryDaysData[countryDaysData.length-1]);
+                updateLivePanelData(countryName,countryDaysData[countryDaysData.length-1]);
             }else{
-                updatePanelData('World',countriesAllCurrentData['World']);
+                updateLivePanelData('World',countriesAllCurrentData['World']);
             }
 
         });
@@ -2411,7 +2806,7 @@ function doTheInit() {
          * Update panel to world data when we are in no country
          */
         svgMap.on('mouseleave','path',function () {
-            updatePanelData('World',countriesAllCurrentData['World']);
+            updateLivePanelData('World',countriesAllCurrentData['World']);
         });
 
         /**
@@ -2429,7 +2824,7 @@ function doTheInit() {
 
                 setTimeout(function () {
 
-                    updatePanelData(countryName,countryDaysData[countryDaysData.length-1]);
+                    updateLivePanelData(countryName,countryDaysData[countryDaysData.length-1]);
                 },1);
             }
         });
@@ -2449,7 +2844,7 @@ function doTheInit() {
             $(this).addClass('selected');
             var countryName = $(this).attr('data-value');
 
-            updatePanelData(countryName,countriesAllData[countryName][countriesAllData[countryName].length-1]);
+            updateLivePanelData(countryName,countriesAllData[countryName][countriesAllData[countryName].length-1]);
         });
 
         /**
@@ -2490,6 +2885,18 @@ function doTheInit() {
             }
         });
 
+        /**
+         * Start update countdown
+         */
+        startCountdown();
+
+        /**
+         * Interval for automatic stats change
+         */
+        setInterval(function () {
+
+            refreshStatistics();
+        },1000 * 6);
     });
 }
 
@@ -2533,6 +2940,17 @@ fetch("https://coronavirus-monitor.p.rapidapi.com/coronavirus/worldstat.php", {
         currentTotalData = data ;
     });
 
+var settings = {
+    "async": true,
+    "url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQuDj0R6K85sdtI8I-Tc7RCx8CnIxKUQue0TCUdrFOKDw9G3JRtGhl64laDd3apApEvIJTdPFJ9fEUL/pubhtml?gid=0&single=true&output=html",
+    "method": "GET",
+};
+
+$.ajax(settings).done(function (response) {
+
+    currentDataLive = $(response).find('.waffle tr');
+});
+
 /**
  * Start everything
  */
@@ -2548,18 +2966,3 @@ doTheInit();
  * - world charts
  *
  */
-// var settings = {
-//     "async": true,
-//     "crossDomain": true,
-//     "url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQuDj0R6K85sdtI8I-Tc7RCx8CnIxKUQue0TCUdrFOKDw9G3JRtGhl64laDd3apApEvIJTdPFJ9fEUL/pubhtml?gid=0&single=true&output=html",
-//     "method": "GET",
-//     // "headers": {
-//     //     "x-rapidapi-host": "covid-19-coronavirus-statistics.p.rapidapi.com",
-//     //     "x-rapidapi-key": "e82ca27984msh8b025242f55a82ep11ea41jsn3a36aa4e1d22"
-//     // }
-// }
-//
-// $.ajax(settings).done(function (response) {
-//     console.log($(response).find('.waffle tr'));
-//
-// });
