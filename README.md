@@ -10,7 +10,7 @@ The historical data is fetched from APIs that combine numerous sources like the 
 # Installation
 Just Download the repo and open index.html in any browser
 
-#TODO
+# TODO
 - More Global Charts
 - More Country Charts
 - Countries sorting
