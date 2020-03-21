@@ -10,6 +10,17 @@ The historical data is fetched from APIs that combine numerous sources like the 
 # Installation
 Just Download the repo and open index.html in any browser
 
+#TODO
+- More Global Charts
+- More Country Charts
+- Countries sorting
+
 # CHANGELOG
+v1.1.0
+- Sources Text Toggle
+- Today Statistics API change
+- Live Updates without screen reload
+- Flashing on statistics change
+
 V1.0.0
-First Build and Comit
+- First Build and Comit
