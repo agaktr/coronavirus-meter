@@ -17,10 +17,10 @@ Just Download the repo and open index.html in any browser
 
 # CHANGELOG
 v1.1.0
--Sources Text Toggle
--Today Statistics API change
--Live Updates without screen reload
--Flashing on statistics change
+- Sources Text Toggle
+- Today Statistics API change
+- Live Updates without screen reload
+- Flashing on statistics change
 
 V1.0.0
--First Build and Comit
+- First Build and Comit
