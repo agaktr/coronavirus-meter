@@ -2897,6 +2897,22 @@ function doTheInit() {
 
             refreshStatistics();
         },1000 * 6);
+
+        /**
+         * Interval for coutries list back and forth
+         */
+        var scrollHeight = document.getElementById('countries-select').scrollHeight;
+
+        $("#countries-select").animate({ scrollTop: document.getElementById('countries-select').scrollHeight }, 100000);
+
+        setTimeout(function() { $("#countries-select").animate({scrollTop:0}, 100000); },100000);
+
+
+        setInterval(function(){
+            // 4000 - it will take 4 secound in total from the top of the page to the bottom
+            $("#countries-select").animate({ scrollTop: scrollHeight }, 100000);
+            setTimeout(function() {$("#countries-select").animate({scrollTop:0}, 100000); },100000);
+        },200000);
     });
 }
 
