@@ -1792,11 +1792,26 @@
  */
 
 'use strict';
+function detectMob() {
+    const toMatch = [
+        /Android/i,
+        /webOS/i,
+        /iPhone/i,
+        /iPad/i,
+        /iPod/i,
+        /BlackBerry/i,
+        /Windows Phone/i
+    ];
 
+    return toMatch.some((toMatchItem) => {
+        return navigator.userAgent.match(toMatchItem);
+    });
+}
 /**
  * Data vars
  */
-var countriesHistoryData,
+var isMobile = detectMob(),
+    countriesHistoryData,
     countriesCurrentData,
     currentDataLive,
     currentTotalData,
@@ -1992,6 +2007,8 @@ function mapData() {
 
 function addDataToSelect(){
 
+    $('.stats').remove();
+
     $.each($('.country'),function () {
 
         var countryName = $(this).attr('data-value'),
@@ -2046,19 +2063,19 @@ function initMap(){
          */
         if (undefined !== countryDaysData){
 
-            var upto = 39;
+            var upto = 119;
             var max = 25000;
-            if (countryDaysData[countryDaysData.length-1].confirmed < 500){
-                upto = 15;
-                max = 500;
-            }
-            else if(countryDaysData[countryDaysData.length-1].confirmed < 5000){
-                upto = 30;
-                max = 5000;
-            }
-            var colorScheme = ((upto * countryDaysData[countryDaysData.length-1].confirmed)/max);
+            // if (countryDaysData[countryDaysData.length-1].active_cases < 500){
+            //     upto = 15;
+            //     max = 500;
+            // }
+            // else if(countryDaysData[countryDaysData.length-1].active_cases < 5000){
+            //     upto = 30;
+            //     max = 5000;
+            // }
+            var colorScheme = ((upto * countryDaysData[countryDaysData.length-1].active_cases)/max);
             if (colorScheme > upto){colorScheme = upto;}
-            colorScheme = 40 - colorScheme;
+            colorScheme = 120 - colorScheme;
 
             $(this).css('fill','hsl('+colorScheme+',90%,60%)');
         }
@@ -2692,6 +2709,10 @@ function checkForChanges() {
         updateLivePanelData('World',countriesAllCurrentData['World']);
     }
 
+    /**
+     * Refresh Country table
+     */
+    addDataToSelect();
 }
 
 /**
@@ -2731,7 +2752,6 @@ function doTheInit() {
 
     /**
      * Mobile Select Data
-     * TODO DO NOT ON DESKTOP
      */
     addDataToSelect();
 
@@ -2885,34 +2905,37 @@ function doTheInit() {
             }
         });
 
-        /**
-         * Start update countdown
-         */
-        startCountdown();
+        if (isMobile === false){
 
-        /**
-         * Interval for automatic stats change
-         */
-        setInterval(function () {
+            /**
+             * Start update countdown
+             */
+            startCountdown();
 
-            refreshStatistics();
-        },1000 * 6);
+            /**
+             * Interval for automatic stats change
+             */
+            setInterval(function () {
 
-        /**
-         * Interval for coutries list back and forth
-         */
-        var scrollHeight = document.getElementById('countries-select').scrollHeight;
+                refreshStatistics();
+            },1000 * 6);
 
-        $("#countries-select").animate({ scrollTop: document.getElementById('countries-select').scrollHeight }, 100000);
+            /**
+             * Interval for coutries list back and forth
+             */
+            var scrollHeight = document.getElementById('countries-select').scrollHeight;
 
-        setTimeout(function() { $("#countries-select").animate({scrollTop:0}, 100000); },100000);
+            $("#countries-select").animate({ scrollTop: document.getElementById('countries-select').scrollHeight }, 100000,'linear');
 
+            setTimeout(function() { $("#countries-select").animate({scrollTop:0}, 100000); },100000,'linear');
+            
+            setInterval(function(){
+                // 4000 - it will take 4 secound in total from the top of the page to the bottom
+                $("#countries-select").animate({ scrollTop: scrollHeight }, 100000,'linear');
+                setTimeout(function() {$("#countries-select").animate({scrollTop:0}, 100000); },100000,'linear');
+            },200000);
 
-        setInterval(function(){
-            // 4000 - it will take 4 secound in total from the top of the page to the bottom
-            $("#countries-select").animate({ scrollTop: scrollHeight }, 100000);
-            setTimeout(function() {$("#countries-select").animate({scrollTop:0}, 100000); },100000);
-        },200000);
+        }
     });
 }
 
