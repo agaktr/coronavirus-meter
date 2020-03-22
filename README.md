@@ -14,6 +14,7 @@ Just Download the repo and open index.html in any browser
 - More Global Charts
 - More Country Charts
 - Countries sorting
+- Bug Fixes
 
 # CHANGELOG
 v1.1.1
