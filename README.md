@@ -19,6 +19,7 @@ Just Download the repo and open index.html in any browser
 # CHANGELOG
 v1.1.1
 - Countries Stats Autoscrolling
+- Color is based on active cases instead of total cases
 
 v1.1.0
 - Sources Text Toggle
