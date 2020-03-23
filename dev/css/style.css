@@ -260,7 +260,7 @@ img.logo {
 }
 
 .indicator-gradient {
-    width: 65px;
+    width: 48px;
     height: 15px;
 }
 .indicator span {
@@ -284,6 +284,9 @@ img.logo {
 }
 .high-gradient{
     background: linear-gradient(90deg, rgba(228, 108, 45,1) 0%, rgba(245, 64, 61,1) 100%);
+}
+.active-gradient{
+    background: linear-gradient(90deg, rgba(64, 245, 61,1) 0%, rgba(245, 64, 61,1) 100%);
 }
 .no-gradient{
     background: #2b3240;
@@ -318,7 +321,7 @@ img.logo {
 
 .mobile-countries-wrapper {
     position: absolute;
-    top: 136px;
+    top: 76px;
     right: 10px;
     background: #1f242d;
     width: 190px;
@@ -337,7 +340,7 @@ img.logo {
 
 .countries-select {
     position: relative;
-    height: calc(100vh - 136px - 118px);
+    height: calc(100vh - 76px - 118px);
     overflow: auto;
 }
 .mobile-countries-wrapper .country.selected {

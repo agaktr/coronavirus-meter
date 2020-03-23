@@ -2044,19 +2044,7 @@ function initMap(){
          * Try exact match
          */
         var countryName = $(this).attr('title'),
-            countryDaysData = countriesAllData[countryName];
-
-        /**
-         * Manual mapping
-         */
-        if (undefined === countryDaysData){
-
-            if (countryName === 'Democratic Republic of Congo'){countryDaysData = countriesAllData['Congo'];}
-            if (countryName === 'Republic of Congo'){countryDaysData = countriesAllData['Congo'];}
-            if (countryName === 'Czech Republic'){countryDaysData = countriesAllData['Czechia'];}
-            if (countryName === 'Macedonia'){countryDaysData = countriesAllData['North Macedonia'];}
-            if (countryName === 'United States'){countryDaysData = countriesAllData['US'];}
-        }
+            countryDaysData = countriesMapMapping(countryName);
 
         /**
          * Paint country if we have data
@@ -2078,20 +2066,16 @@ function initMap(){
             colorScheme = 120 - colorScheme;
 
             $(this).css('fill','hsl('+colorScheme+',90%,60%)');
+        }else{
+            console.log(countryName);
+            console.log(countriesAllData);
         }
     });
 }
 
-/**
- * Functions to load country charts data etc
- */
-function loadCountryStats(country){
+function countriesMapMapping(countryName) {
 
-    /**
-     * Try exact match
-     */
-    var countryName = country,
-        countryDaysData = countriesAllData[countryName];
+    var countryDaysData = countriesAllData[countryName];
 
     /**
      * Manual mapping
@@ -2103,7 +2087,28 @@ function loadCountryStats(country){
         if (countryName === 'Czech Republic'){countryDaysData = countriesAllData['Czechia'];}
         if (countryName === 'Macedonia'){countryDaysData = countriesAllData['North Macedonia'];}
         if (countryName === 'United States'){countryDaysData = countriesAllData['US'];}
+        if (countryName === 'Bahamas'){countryDaysData = countriesAllData['Bahasmas, The'];}
+        if (countryName === 'Democratic Republic of Congo'){countryDaysData = countriesAllData['Congo (Kinshasa)'];}
+        if (countryName === 'Republic of Congo'){countryDaysData = countriesAllData['Congo (Brazzaville)'];}
+        if (countryName === 'Côte d\'Ivoire'){countryDaysData = countriesAllData['Cote d\'Ivoire'];}
+        if (countryName === 'Gambia'){countryDaysData = countriesAllData['Gambia, The'];}
+        if (countryName === 'South Korea'){countryDaysData = countriesAllData['Korea, South'];}
+        if (countryName === 'South Korea'){countryDaysData = countriesAllData['Korea, South'];}
     }
+
+    return countryDaysData;
+}
+
+/**
+ * Functions to load country charts data etc
+ */
+function loadCountryStats(country){
+
+    /**
+     * Try exact match
+     */
+    var countryName = country,
+        countryDaysData = countriesMapMapping(countryName);
 
     /**
      * Load the stats
@@ -2796,19 +2801,8 @@ function doTheInit() {
              * Try exact match
              */
             var countryName = $(this).attr('title'),
-                countryDaysData = countriesAllData[countryName];
+                countryDaysData = countriesMapMapping(countryName);
 
-            /**
-             * Manual mapping
-             */
-            if (undefined === countryDaysData){
-
-                if (countryName === 'Democratic Republic of Congo'){countryDaysData = countriesAllData['Congo'];}
-                if (countryName === 'Republic of Congo'){countryDaysData = countriesAllData['Congo'];}
-                if (countryName === 'Czech Republic'){countryDaysData = countriesAllData['Czechia'];}
-                if (countryName === 'Macedonia'){countryDaysData = countriesAllData['North Macedonia'];}
-                if (countryName === 'United States'){countryDaysData = countriesAllData['US'];}
-            }
 
             /**
              * Load the stats of that country to the info box
