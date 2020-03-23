@@ -3197,7 +3197,6 @@ function doTheInit() {
 
             $("#countries-select").on('mouseleave',function () {
                 countriesInterval = setInterval(function(){
-                    // 4000 - it will take 4 secound in total from the top of the page to the bottom
                     $("#countries-select").animate({ scrollTop: scrollHeight }, 100000,'linear');
                     setTimeout(function() {$("#countries-select").animate({scrollTop:0}, 100000); },100000,'linear');
                 },200000);
