@@ -13,7 +13,6 @@ Just Download the repo and open index.html in any browser
 # TODO
 - More Global Charts
 - More Country Charts
-- Countries sorting
 - Bug Fixes
 
 # CHANGELOG
