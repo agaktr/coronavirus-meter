@@ -1827,6 +1827,7 @@ var isMobile = detectMob(),
     liveRecovered,
     countDownInterval,
     didRemoveBlinks,
+    countriesInterval,
     svgMap;
 
 /**
@@ -1857,6 +1858,49 @@ function titleCase(str) {
     return splitStr.join(' ');
 }
 
+/**
+ * This function sorts the countries
+ */
+function countriesSort(sortType) {
+
+    switch (sortType) {
+        case 'azSorting':
+            $('.countries-select .country').sort(function (a,b) {
+                return ($(b).text().toUpperCase()) <
+                ($(a).text().toUpperCase()) ? 1 : -1;
+            }).appendTo('.countries-select');
+            break;
+        case 'cSorting':
+            $('.countries-select .country').sort(function (a,b) {
+
+                var aC = parseInt($(a).find('.couC').text());
+                var bC = parseInt($(b).find('.couC').text());
+
+                return aC < bC ? 1 : -1;
+            }).appendTo('.countries-select');
+            break;
+        case 'dSorting':
+            $('.countries-select .country').sort(function (a,b) {
+
+                var aC = parseInt($(a).find('.couD').text());
+                var bC = parseInt($(b).find('.couD').text());
+
+                return aC < bC ? 1 : -1;
+            }).appendTo('.countries-select');
+            break;
+        case 'rSorting':
+            $('.countries-select .country').sort(function (a,b) {
+
+                var aC = parseInt($(a).find('.couR').text());
+                var bC = parseInt($(b).find('.couR').text());
+
+                return aC < bC ? 1 : -1;
+            }).appendTo('.countries-select');
+            break;
+    }
+
+
+}
 /**
  * This functions maps the countries for the apis
  */
@@ -2044,9 +2088,12 @@ function addDataToSelect(){
         if (undefined !== countriesAllData[countryName]){
             countryData = countriesAllData[countryName][countriesAllData[countryName].length-1];
             countryStatsHTML = '<div class="stats"><div class="c">C: <span class="couC">'+countryData.confirmed+'</span></div><div class="d">D: <span class="couD">'+countryData.deaths+'</span></div><div class="r">R: <span class="couR">'+countryData.recovered+'</span></div></div>'
+
+            $(this).append(countryStatsHTML);
+        }else{
+            $(this).remove();
         }
 
-        $(this).append(countryStatsHTML);
     });
 }
 
@@ -3099,20 +3146,32 @@ function doTheInit() {
             }
         });
 
+        /**
+         * Sort countries by cases
+         */
+        countriesSort('cSorting');
+        
+        body.on('click','.sort',function () {
+
+            $('.sort').removeClass('selected');
+            $(this).addClass('selected');
+            countriesSort($(this).attr('data-sort'));
+        });
+
+        /**
+         * Start update countdown
+         */
+        startCountdown();
+
+        /**
+         * Interval for automatic stats change
+         */
+        setInterval(function () {
+
+            refreshStatistics();
+        },1000 * 15);
+
         if (isMobile === false){
-
-            /**
-             * Start update countdown
-             */
-            startCountdown();
-
-            /**
-             * Interval for automatic stats change
-             */
-            setInterval(function () {
-
-                refreshStatistics();
-            },1000 * 15);
 
             /**
              * Interval for coutries list back and forth
@@ -3123,12 +3182,26 @@ function doTheInit() {
 
             setTimeout(function() { $("#countries-select").animate({scrollTop:0}, 100000); },100000,'linear');
             
-            setInterval(function(){
+            countriesInterval = setInterval(function(){
                 // 4000 - it will take 4 secound in total from the top of the page to the bottom
                 $("#countries-select").animate({ scrollTop: scrollHeight }, 100000,'linear');
                 setTimeout(function() {$("#countries-select").animate({scrollTop:0}, 100000); },100000,'linear');
             },200000);
 
+            $("#countries-select").on('mouseenter',function () {
+
+                clearInterval(countriesInterval);
+                $("#countries-select").clearQueue();
+                $("#countries-select").stop();
+            });
+
+            $("#countries-select").on('mouseleave',function () {
+                countriesInterval = setInterval(function(){
+                    // 4000 - it will take 4 secound in total from the top of the page to the bottom
+                    $("#countries-select").animate({ scrollTop: scrollHeight }, 100000,'linear');
+                    setTimeout(function() {$("#countries-select").animate({scrollTop:0}, 100000); },100000,'linear');
+                },200000);
+            });
         }
     });
 }

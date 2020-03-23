@@ -414,6 +414,20 @@ span.statNote {
     font-size: smaller;
 }
 
+.sort.selected {
+    background: #fff;
+    color: #1f242d;
+}
+.sort {
+    width: calc(25% - 15px);
+    position: relative;
+    display: inline-block;
+    padding: 5px;
+    text-align: center;
+    border: 1px solid;
+    margin-bottom: 4px;
+    transition: 0.2s ease-in-out;
+}
 
 @media only screen and (max-width: 900px) {
     .chart {
