@@ -17,6 +17,10 @@ Just Download the repo and open index.html in any browser
 - Bug Fixes
 
 # CHANGELOG
+v1.1.2
+- Made fallback liveUpdates functions if the first is slow
+- Changed frequency of updates from 6 seconds to 15 seconds
+
 v1.1.1
 - Countries Stats Autoscrolling
 - Color is based on active cases instead of total cases
