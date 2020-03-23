@@ -13,10 +13,12 @@ Just Download the repo and open index.html in any browser
 # TODO
 - More Global Charts
 - More Country Charts
-- Countries sorting
 - Bug Fixes
 
 # CHANGELOG
+v1.1.3
+- Countries Sorting and manual scroll
+
 v1.1.2
 - Made fallback liveUpdates functions if the first is slow
 - Changed frequency of updates from 6 seconds to 15 seconds
