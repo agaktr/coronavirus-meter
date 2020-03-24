@@ -16,6 +16,10 @@ Just Download the repo and open index.html in any browser
 - Bug Fixes
 
 # CHANGELOG
+v1.2.0
+- Compare countries statistics by clicking on the countries dropdown
+- Beutification
+
 v1.1.3
 - Countries Sorting and manual scroll
 
