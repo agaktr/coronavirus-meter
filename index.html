@@ -98,9 +98,11 @@
         <input class="autocomplete" type="text" placeholder="Search">
         <div class="sorting">
             <div class="sort" data-sort="azSorting">A-Z</div>
-            <div class="sort selected" data-sort="cSorting">C</div>
-            <div class="sort" data-sort="dSorting">D</div>
-            <div class="sort" data-sort="rSorting">R</div>
+            <div class="sort selected" data-sort="cSorting">Cases</div>
+            <div class="sort" data-sort="dSorting">Deaths</div>
+            <div class="sort" data-sort="rSorting">Recovered</div>
+            <div class="compare">Compare</div>
+            <div class="close-compare">Close</div>
         </div>
         <div class="countries-select" id="countries-select">
             <div class="country" data-value="Thailand">Thailand</div>
@@ -255,6 +257,41 @@
             <div class="country" data-value="Barbados">Barbados</div>
             <div class="country" data-value="Montenegro">Montenegro</div>
             <div class="country" data-value="The Gambia">The Gambia</div>
+        </div>
+        <div class="compare-charts-wrapper">
+            <div class="chart">
+                <div class="chart-label">Total Cases</div>
+                <canvas id="compareTotal" width="450" height="400"></canvas>
+            </div>
+            <div class="chart">
+                <div class="chart-label">Total Cases By Day</div>
+                <canvas id="compareDayTotal" width="450" height="400"></canvas>
+            </div>
+            <div class="chart">
+                <div class="chart-label">Total Recovered</div>
+                <canvas id="compareRecovered" width="450" height="400"></canvas>
+            </div>
+            <div class="chart">
+                <div class="chart-label">Total Cases By Day</div>
+                <canvas id="compareDayRecovered" width="450" height="400"></canvas>
+            </div>
+            <div class="chart">
+                <div class="chart-label">Total Deaths</div>
+                <canvas id="compareDeaths" width="450" height="400"></canvas>
+            </div>
+            <div class="chart">
+                <div class="chart-label">Total Deaths</div>
+                <canvas id="compareDayDeaths" width="450" height="400"></canvas>
+            </div>
+            <div class="chart">
+                <div class="chart-label">Active Cases</div>
+                <canvas id="compareActive" width="450" height="400"></canvas>
+            </div>
+            <div class="chart">
+                <div class="chart-label">Active Cases</div>
+                <canvas id="compareDayActive" width="450" height="400"></canvas>
+            </div>
+
         </div>
         <div class="show-stats-btn">Show Statistics</div>
     </div>

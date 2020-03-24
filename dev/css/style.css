@@ -330,7 +330,7 @@ img.logo {
     border-radius: 4px;
     z-index: 1;
     box-shadow: 0 8px 17px 2px rgba(0,0,0,0.14), 0 3px 14px 2px rgba(0,0,0,0.12), 0 5px 5px -3px rgba(0,0,0,0.2);
-    transition: 0.2s ease-in-out 0.4s;
+    transition: 0.2s ease-in-out;
 }
 
 .panel-active .mobile-countries-wrapper {
@@ -340,18 +340,18 @@ img.logo {
 
 .countries-select {
     position: relative;
-    height: calc(100vh - 76px - 118px);
+    height: calc(100vh - 142px - 118px);
     overflow: auto;
 }
 .mobile-countries-wrapper .country.selected {
-    background: #222b40;
+    background: #374871;
 }
 .mobile-countries-wrapper .country {
     padding: 0.5rem;
     border-bottom: 1px solid #1e2431;
     transition: 0.2s ease-in-out;
     overflow: hidden;
-    pointer-events: none;
+    cursor: pointer;
 }
 .mobile-countries-wrapper .country.not-matched{
     height: 0px;
@@ -427,6 +427,67 @@ span.statNote {
     border: 1px solid;
     margin-bottom: 4px;
     transition: 0.2s ease-in-out;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mobile-countries-wrapper.compare-active {
+    width: 80vw;
+}
+
+.mobile-countries-wrapper.compare-active .country {
+    width: calc(20% - 26px);
+    display: inline-block;
+    margin: 5px;
+}
+.mobile-countries-wrapper.compare-active .compare,.mobile-countries-wrapper.compare-active .close-compare {
+
+    width: calc(12.5% - 15px);
+    padding: 5px;
+    border: 1px solid;
+}
+.mobile-countries-wrapper.compare-active .compare.selected {
+
+    color: #fff;
+    background: #eb5569;
+}
+.compare,.close-compare {
+
+    overflow: hidden;
+    width: 0;
+    position: relative;
+    display: inline-block;
+    padding: 0;
+    text-align: center;
+    border: 0;
+    margin-bottom: 4px;
+    transition: 0.2s ease-in-out;
+    cursor: pointer;
+    background: #374871;
+}
+
+.compare-charts-wrapper {
+    height: 0;
+    transition: 0.2s ease-in-out;
+    position: fixed;
+    top: 160px;
+    width: 80vw;
+    background: #1f242d;
+    overflow: auto;
+}
+.charts-active .compare-charts-wrapper {
+
+    height: calc(100vh - 142px - 118px);
+}
+
+.chart-label {
+    text-align: center;
+    padding: 1rem;
+    font-size: 1.5em;
+}
+.compare-charts-wrapper .chart {
+    margin-bottom: 3.5rem;
 }
 
 @media only screen and (max-width: 900px) {
@@ -482,6 +543,7 @@ span.statNote {
         right: unset;
         height: 100vh;
         padding: 0;
+        transition: 0.2s ease-in-out 0.4s;
     }
 
     .countries-select {

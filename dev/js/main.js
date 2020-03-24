@@ -1828,6 +1828,15 @@ var isMobile = detectMob(),
     countDownInterval,
     didRemoveBlinks,
     countriesInterval,
+    comparedCountries,
+    compareTotal,
+    compareRecovered,
+    compareDeaths,
+    compareActive,
+    compareDayTotal,
+    compareDayRecovered,
+    compareDayDeaths,
+    compareDayActive,
     svgMap;
 
 /**
@@ -2095,6 +2104,11 @@ function addDataToSelect(){
         }
 
     });
+
+    /**
+     * Sort countries by cases
+     */
+    countriesSort($('.sort.selected').attr('data-sort'));
 }
 
 /**
@@ -2827,6 +2841,7 @@ function checkForChangesFallback() {
     var totalRecovered = 0;
     var totalCasesDone = false;
     didRemoveBlinks = false;
+
     /**
      * Check if obsolete
      */
@@ -2968,6 +2983,256 @@ function checkForChangesFallback() {
 }
 
 /**
+ * compared countires
+ */
+function compareCountries() {
+
+    if (compareTotal){
+        compareTotal.destroy();
+        compareRecovered.destroy();
+        compareDeaths.destroy();
+        compareActive.destroy();
+    }
+
+    var confirmedDatasets = [],
+        confirmedCurrentDatasets = [],
+        activeDatasets = [],
+        activeCurrentDatasets = [],
+        recoveredDatasets = [],
+        recoveredCurrentDatasets = [],
+        deathsDatasets = [],
+        deathsCurrentDatasets = [],
+        dates = [];
+
+    $.each(comparedCountries,function (key,countryName) {
+
+        var total = [],
+            recovered = [],
+            deaths = [],
+            active = [],
+            confirmedCurrent = [],
+            recoveredCurrent = [],
+            deathsCurrent = [],
+            activeCurrent = [];
+        dates = [];
+        var randomColor = Math.floor(Math.random()*16777215).toString(16);
+
+        var currA = 0;
+        var currC = 0;
+        var currD = 0;
+        var currR = 0;
+
+        $.each(countriesAllData[countryName],function (k,v) {
+
+            dates.push(v.date);
+            total.push(v.confirmed);
+            recovered.push(v.recovered);
+            deaths.push(v.deaths);
+            var activeCases = v.confirmed - v.recovered - v.deaths;
+            active.push(activeCases);
+
+            confirmedCurrent.push(v.confirmed - currC);
+            deathsCurrent.push(v.deaths - currD);
+            recoveredCurrent.push(v.recovered - currR);
+            activeCurrent.push(activeCases - currA);
+
+            currC = v.confirmed;
+            currD = v.deaths;
+            currR = v.recovered;
+            currA = activeCases;
+        });
+
+        confirmedDatasets[key] = {
+            label: countryName,
+            borderColor: '#'+randomColor,
+            data: total,
+            fill:false,
+            lineTension:0.1
+        };
+
+        confirmedCurrentDatasets[key] = {
+            label: countryName,
+            borderColor: '#'+randomColor,
+            data: confirmedCurrent,
+            fill:false,
+            lineTension:0.1
+        };
+
+        recoveredDatasets[key] = {
+            label: countryName,
+            borderColor: '#'+randomColor,
+            data: recovered,
+            fill:false,
+            lineTension:0.1
+        };
+
+        recoveredCurrentDatasets[key] = {
+            label: countryName,
+            borderColor: '#'+randomColor,
+            data: recoveredCurrent,
+            fill:false,
+            lineTension:0.1
+        };
+
+        deathsDatasets[key] = {
+            label: countryName,
+            // backgroundColor: '#'+randomColor,
+            borderColor: '#'+randomColor,
+            // hoverBackgroundColor : '#'+randomColor,
+            data: deaths,
+            fill:false,
+            lineTension:0.1
+        };
+
+        deathsCurrentDatasets[key] = {
+            label: countryName,
+            // backgroundColor: '#'+randomColor,
+            borderColor: '#'+randomColor,
+            // hoverBackgroundColor : '#'+randomColor,
+            data: deathsCurrent,
+            fill:false,
+            lineTension:0.1
+        };
+
+        activeDatasets[key] = {
+            label: countryName,
+            // backgroundColor: '#'+randomColor,
+            borderColor: '#'+randomColor,
+            // hoverBackgroundColor : '#'+randomColor,
+            data: active,
+            fill:false,
+            lineTension:0.1
+        };
+
+        activeCurrentDatasets[key] = {
+            label: countryName,
+            // backgroundColor: '#'+randomColor,
+            borderColor: '#'+randomColor,
+            // hoverBackgroundColor : '#'+randomColor,
+            data: activeCurrent,
+            fill:false,
+            lineTension:0.1
+        };
+
+    });
+
+    /**
+     * chart same vars
+     * TODO tooltips on first chart like we have to raise z index of activeChart
+     *
+     */
+    var globarChartOptions = {
+        type: 'line',
+        options: {
+            elements: {
+                point:{
+                    radius: 0
+                }
+            },
+            legend: {
+                labels: {
+                    fontColor: "white",
+                }
+            },
+            scales: {
+                xAxes: [{
+                    stacked: false,
+                    ticks: {
+                        fontColor: "white"
+                    }
+                }],
+                yAxes: [{
+                    stacked: false,
+                    ticks: {
+                        beginAtZero: true,
+                        fontColor: "white"
+                    },
+                    gridLines: {
+                        color: "rgba(255,255,255,0.05)"
+                    }
+                }]
+            },
+            responsive:true,
+        }
+    };
+
+    /**
+     * Total Compare cases
+     */
+    var compareTotalctx = document.getElementById('compareTotal').getContext('2d');
+    compareTotal = new Chart(compareTotalctx, {
+        ...globarChartOptions,
+        data: {
+            labels: dates,
+            datasets: confirmedDatasets
+        },
+    });
+
+    var compareActivectx = document.getElementById('compareActive').getContext('2d');
+    compareActive = new Chart(compareActivectx, {
+        ...globarChartOptions,
+        data: {
+            labels: dates,
+            datasets: activeDatasets
+        },
+    });
+
+    var compareRecoveredctx = document.getElementById('compareRecovered').getContext('2d');
+    compareRecovered = new Chart(compareRecoveredctx, {
+        ...globarChartOptions,
+        data: {
+            labels: dates,
+            datasets: recoveredDatasets
+        },
+    });
+
+    var compareDeathsctx = document.getElementById('compareDeaths').getContext('2d');
+    compareDeaths = new Chart(compareDeathsctx, {
+        ...globarChartOptions,
+        data: {
+            labels: dates,
+            datasets: deathsDatasets
+        },
+    });
+
+    var compareDayTotalctx = document.getElementById('compareDayTotal').getContext('2d');
+    compareDayTotal = new Chart(compareDayTotalctx, {
+        ...globarChartOptions,
+        data: {
+            labels: dates,
+            datasets: confirmedCurrentDatasets
+        },
+    });
+
+    var compareDayRecoveredctx = document.getElementById('compareDayRecovered').getContext('2d');
+    compareDayRecovered = new Chart(compareDayRecoveredctx, {
+        ...globarChartOptions,
+        data: {
+            labels: dates,
+            datasets: recoveredCurrentDatasets
+        },
+    });
+
+    var compareDayDeathsctx = document.getElementById('compareDayDeaths').getContext('2d');
+    compareDayDeaths = new Chart(compareDayDeathsctx, {
+        ...globarChartOptions,
+        data: {
+            labels: dates,
+            datasets: deathsCurrentDatasets
+        },
+    });
+
+    var compareDayActivectx = document.getElementById('compareDayActive').getContext('2d');
+    compareDayActive = new Chart(compareDayActivectx, {
+        ...globarChartOptions,
+        data: {
+            labels: dates,
+            datasets: activeCurrentDatasets
+        },
+    });
+}
+
+/**
  * This is the main function that starts everything
  */
 function doTheInit() {
@@ -3032,7 +3297,7 @@ function doTheInit() {
         });
 
         /**
-         * Toggle sorces
+         * Toggle sources
          */
         body.on('click','.toggle-sources',function () {
             $(this).toggleClass('toggled');
@@ -3090,72 +3355,49 @@ function doTheInit() {
             }
         });
 
-        $('#worldMap').svgPanZoom();
-
         /**
-         * MOBILE FUNCTIONS BELOW
+         * On a country sort
          */
-
-        /**
-         * On country click update panel data
-         */
-        body.on('click','.country',function () {
-
-            $('.country').removeClass('selected');
-            $(this).addClass('selected');
-            var countryName = $(this).attr('data-value');
-
-            updateLivePanelData(countryName,countriesAllData[countryName][countriesAllData[countryName].length-1]);
-        });
-
-        /**
-         * On show stats button click
-         */
-        body.on('click','.show-stats-btn',function () {
-
-            if (body.hasClass('stats-active')){
-                body.toggleClass('stats-active');
-
-                $(this).text('Show Statistics');
-            }else{
-                var countryName = $('.country.selected').attr('data-value');
-                var countryDaysData = loadCountryStats(countryName);
-
-                if (undefined !== countryDaysData) {
-                    body.toggleClass('stats-active');
-
-                    $(this).text('Show Countries');
-                }
-            }
-
-        });
-
-        /**
-         * Sort of autocomplete
-         */
-        body.on('keyup touchdown change','input.autocomplete',function () {
-
-            $('.country').removeClass('matched not-matched');
-            if ($(this).val().length === 0){
-
-            }else {
-                var matched = $('.country[data-value*=' + titleCase($(this).val()) + ']');
-                matched.addClass('matched');
-                var notMatched = $('.country').not('.matched');
-                notMatched.addClass('not-matched')
-            }
-        });
-
-        /**
-         * Sort countries by cases
-         */
-        countriesSort('cSorting');
-        
         body.on('click','.sort',function () {
 
             $('.sort').removeClass('selected');
             $(this).addClass('selected');
             countriesSort($(this).attr('data-sort'));
+        });
+
+        /**
+         * On compare countries click
+         */
+        body.on('click','.compare',function () {
+
+            $(this).toggleClass('selected');
+            $(this).closest('.mobile-countries-wrapper').toggleClass('charts-active');
+
+            // if ($('.mobile-countries-wrapper').hasClass('chart-active')) {
+
+                comparedCountries = [];
+                $.each($('.country.selected'),function () {
+
+                    comparedCountries.push($(this).attr('data-value'));
+                });
+
+                compareCountries();
+
+            // }
+        });
+
+        /**
+         * On close compare countries click
+         */
+        body.on('click','.close-compare',function () {
+
+            if ($('.mobile-countries-wrapper').hasClass('charts-active')){
+                $('.compare').trigger('click');
+            }
+            $('.country').removeClass('selected');
+            $('.country').removeClass('selected');
+            $(this).closest('.mobile-countries-wrapper').removeClass('compare-active');
+            startSelectInterval();
         });
 
         /**
@@ -3174,35 +3416,129 @@ function doTheInit() {
         if (isMobile === false){
 
             /**
+             * On country click start compare system
+             */
+            body.on('click','.country',function () {
+
+                $(this).toggleClass('selected');
+                var countryName = $(this).attr('data-value');
+
+                updateLivePanelData(countryName,countriesAllData[countryName][countriesAllData[countryName].length-1]);
+
+                if ($('.country.selected').length > 0){
+                    if ($('.country.selected').length === 1){
+
+                        $(this).closest('.mobile-countries-wrapper').addClass('compare-active');
+
+                        $("#countries-select").animate({scrollTop:0}, 100);
+                    }
+
+                }else{
+                    $(this).closest('.mobile-countries-wrapper').removeClass('compare-active');
+                    startSelectInterval();
+                }
+            });
+
+            /**
+             * SVG map zoom init here
+             */
+            $('#worldMap').svgPanZoom();
+
+            /**
              * Interval for coutries list back and forth
              */
-            var scrollHeight = document.getElementById('countries-select').scrollHeight;
-
-            $("#countries-select").animate({ scrollTop: document.getElementById('countries-select').scrollHeight }, 100000,'linear');
-
-            setTimeout(function() { $("#countries-select").animate({scrollTop:0}, 100000); },100000,'linear');
-            
-            countriesInterval = setInterval(function(){
-                // 4000 - it will take 4 secound in total from the top of the page to the bottom
-                $("#countries-select").animate({ scrollTop: scrollHeight }, 100000,'linear');
-                setTimeout(function() {$("#countries-select").animate({scrollTop:0}, 100000); },100000,'linear');
-            },200000);
+            startSelectInterval();
 
             $("#countries-select").on('mouseenter',function () {
 
-                clearInterval(countriesInterval);
-                $("#countries-select").clearQueue();
-                $("#countries-select").stop();
+                stopSelectInterval();
             });
 
             $("#countries-select").on('mouseleave',function () {
-                countriesInterval = setInterval(function(){
-                    $("#countries-select").animate({ scrollTop: scrollHeight }, 100000,'linear');
-                    setTimeout(function() {$("#countries-select").animate({scrollTop:0}, 100000); },100000,'linear');
-                },200000);
+
+                startSelectInterval();
+            });
+        }else{
+            /**
+             * MOBILE FUNCTIONS BELOW
+             */
+
+            /**
+             * On country click update panel data
+             */
+            body.on('click','.country',function () {
+
+                $('.country').removeClass('selected');
+                $(this).addClass('selected');
+                var countryName = $(this).attr('data-value');
+
+                updateLivePanelData(countryName,countriesAllData[countryName][countriesAllData[countryName].length-1]);
+            });
+
+            /**
+             * On show stats button click
+             */
+            body.on('click','.show-stats-btn',function () {
+
+                if (body.hasClass('stats-active')){
+                    body.toggleClass('stats-active');
+
+                    $(this).text('Show Statistics');
+                }else{
+                    var countryName = $('.country.selected').attr('data-value');
+                    var countryDaysData = loadCountryStats(countryName);
+
+                    if (undefined !== countryDaysData) {
+                        body.toggleClass('stats-active');
+
+                        $(this).text('Show Countries');
+                    }
+                }
+
+            });
+
+            /**
+             * Sort of autocomplete
+             */
+            body.on('keyup touchdown change','input.autocomplete',function () {
+
+                $('.country').removeClass('matched not-matched');
+                if ($(this).val().length === 0){
+
+                }else {
+                    var matched = $('.country[data-value*=' + titleCase($(this).val()) + ']');
+                    matched.addClass('matched');
+                    var notMatched = $('.country').not('.matched');
+                    notMatched.addClass('not-matched')
+                }
             });
         }
     });
+}
+
+function startSelectInterval(){
+
+    if ($('.mobile-countries-wrapper').hasClass('compare-active')){
+
+    }else{
+        var scrollHeight = document.getElementById('countries-select').scrollHeight;
+
+        $("#countries-select").animate({ scrollTop: scrollHeight}, 100000,'linear');
+
+        setTimeout(function() { $("#countries-select").animate({scrollTop:0}, 100000); },100000,'linear');
+
+        countriesInterval = setInterval(function(){
+            // 4000 - it will take 4 secound in total from the top of the page to the bottom
+            $("#countries-select").animate({ scrollTop: scrollHeight }, 100000,'linear');
+            setTimeout(function() {$("#countries-select").animate({scrollTop:0}, 100000); },100000,'linear');
+        },200000);
+    }
+}
+
+function stopSelectInterval(){
+    clearInterval(countriesInterval);
+    $("#countries-select").clearQueue();
+    $("#countries-select").stop();
 }
 
 /**
