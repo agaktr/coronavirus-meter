@@ -1811,7 +1811,7 @@ function detectMob() {
  * Data vars
  */
 var isMobile = detectMob(),
-    liveSrc = 'main',
+    liveSrc = 'fallback',
     countriesHistoryData,
     countriesCurrentData,
     currentDataLive,
@@ -1837,6 +1837,9 @@ var isMobile = detectMob(),
     compareDayRecovered,
     compareDayDeaths,
     compareDayActive,
+    groupCompare = {
+        'Western Europe':['Spain','Portigal'],
+    },
     svgMap;
 
 /**
@@ -1897,6 +1900,15 @@ function countriesSort(sortType) {
                 return aC < bC ? 1 : -1;
             }).appendTo('.countries-select');
             break;
+        case 'aSorting':
+            $('.countries-select .country').sort(function (a,b) {
+
+                var aC = parseInt($(a).find('.couA').text());
+                var bC = parseInt($(b).find('.couA').text());
+
+                return aC < bC ? 1 : -1;
+            }).appendTo('.countries-select');
+            break;
         case 'rSorting':
             $('.countries-select .country').sort(function (a,b) {
 
@@ -1922,6 +1934,7 @@ function mapData() {
     var totalDeath = 0;
     var totalRecovered = 0;
     var totalCasesDone = false;
+
     $.each(countriesHistoryData,function (countryName,countryDaysData) {
 
         /**
@@ -1929,6 +1942,18 @@ function mapData() {
          */
         var lastDayAdvancedData = {};
         $.each(countriesCurrentData.countries_stat,function (key,countryCurrentData) {
+
+            /**
+             * If fallback enabled check here for total cases
+             * @type {number}
+             */
+            if (liveSrc === 'fallback'){
+                if (totalCasesDone === false) {
+                    totalCases = totalCases + parseInt(countryCurrentData.cases.replace(',',''));
+                    totalDeath = totalDeath + parseInt(countryCurrentData.deaths.replace(',',''));
+                    totalRecovered = totalRecovered + parseInt(countryCurrentData.total_recovered.replace(',',''))
+                }
+            }
 
             /**
              * If exact case and some mapping
@@ -1964,7 +1989,12 @@ function mapData() {
                     /**
                      * Fallback get all stats from this API
                      */
-                    countryDaysData[countryDaysData.length] = {
+                    var keyLength = countryDaysData.length;
+                    if (countryDaysData[countryDaysData.length-1].date === todayDateUse){
+                        keyLength = keyLength - 1;
+                    }
+
+                    countryDaysData[keyLength] = {
                         date: todayDateUse,
                         confirmed: parseInt(countryCurrentData.cases.replace(',','')),
                         deaths: parseInt(countryCurrentData.deaths.replace(',','')),
@@ -1974,11 +2004,6 @@ function mapData() {
                         liveRecovered: 0,
                         ...lastDayAdvancedData
                     };
-
-
-                    totalCases = totalCases + parseInt(countryCurrentData.cases.replace(',',''));
-                    totalDeath = totalDeath + parseInt(countryCurrentData.deaths.replace(',',''));
-                    totalRecovered = totalRecovered + parseInt(countryCurrentData.total_recovered.replace(',',''));
                 }
             }
         });
@@ -1986,8 +2011,6 @@ function mapData() {
         /**
          * add/refresh today stats
          */
-
-
         if (liveSrc === 'main'){
             $.each(currentDataLive,function () {
 
@@ -2056,7 +2079,7 @@ function mapData() {
          */
         totalCasesDone = true;
     });
-
+console.log(countriesAllData);
     /**
      * Create currentAllStats
      */
@@ -2078,6 +2101,7 @@ function mapData() {
     countriesAllCurrentData['World'].total_cases_per_1m_population = parseInt(countriesAllCurrentData['World'].confirmed*1000000/7700000000);
 
     updateLivePanelData('World',countriesAllCurrentData['World']);
+
 }
 
 /**
@@ -2096,7 +2120,8 @@ function addDataToSelect(){
 
         if (undefined !== countriesAllData[countryName]){
             countryData = countriesAllData[countryName][countriesAllData[countryName].length-1];
-            countryStatsHTML = '<div class="stats"><div class="c">C: <span class="couC">'+countryData.confirmed+'</span></div><div class="d">D: <span class="couD">'+countryData.deaths+'</span></div><div class="r">R: <span class="couR">'+countryData.recovered+'</span></div></div>'
+            var active = countryData.confirmed - countryData.deaths - countryData.recovered;
+            countryStatsHTML = '<div class="stats"><div class="c">C: <span class="couC">'+countryData.confirmed+'</span></div><div class="a">A: <span class="couA">'+active+'</span></div><div class="d">D: <span class="couD">'+countryData.deaths+'</span></div><div class="r">R: <span class="couR">'+countryData.recovered+'</span></div></div>'
 
             $(this).append(countryStatsHTML);
         }else{
@@ -2140,14 +2165,6 @@ function initMap(){
 
             var upto = 119;
             var max = 25000;
-            // if (countryDaysData[countryDaysData.length-1].active_cases < 500){
-            //     upto = 15;
-            //     max = 500;
-            // }
-            // else if(countryDaysData[countryDaysData.length-1].active_cases < 5000){
-            //     upto = 30;
-            //     max = 5000;
-            // }
             var colorScheme = ((upto * countryDaysData[countryDaysData.length-1].active_cases)/max);
             if (colorScheme > upto){colorScheme = upto;}
             colorScheme = 120 - colorScheme;
@@ -2245,7 +2262,11 @@ function loadCharts(countryName,data) {
 
     $.each(data,function (k,v) {
 
-        dates.push(v.date);
+        if ((null === v.recovered || undefined === v.recovered || v.recovered === 0) && currR > 0){
+            v.recovered = currR;
+        }
+
+        dates.push(v.date.replace('2020-',''));
         confirmed.push(v.confirmed);
         confirmedCurrent.push(v.confirmed - currC);
         deaths.push(v.deaths);
@@ -2289,18 +2310,19 @@ function loadCharts(countryName,data) {
                 xAxes: [{
                     stacked: false,
                     ticks: {
-                        fontColor: "white"
+                        fontColor: "white",
                     }
                 }],
                 yAxes: [{
                     stacked: false,
                     ticks: {
                         beginAtZero: true,
-                        fontColor: "white"
+                        fontColor: "white",
+                        precision:0
                     },
                     gridLines: {
                         color: "rgba(255,255,255,0.05)"
-                    }
+                    },
                 }]
             },
             responsive:true,
@@ -2360,17 +2382,32 @@ function loadCharts(countryName,data) {
             labels: dates,
             datasets: [
                 {
-                    label: 'Confirmed Every Day',
-                    backgroundColor: 'rgba(255,167,0,0)',
-                    hoverBackgroundColor: 'rgba(255,167,0,0.6)',
-                    borderColor: '#FF9400',
+                    label: 'Confirmed Each Day',
+                    backgroundColor: 'rgba(250,200,0,0)',
+                    hoverBackgroundColor: 'rgba(250,200,0,0.6)',
+                    borderColor: '#fbc500',
                     data: confirmedCurrent,
                 },
                 {
                     label: '',
                     data: confirmedCurrent,
+                    backgroundColor: 'rgba(250,200,0,0.6)',
+                    borderColor: '#fbc500',
+                    type: 'line',
+                    fill:true,
+                },
+                {
+                    label: 'Active Each Day',
+                    backgroundColor: 'rgba(255, 106,0,0)',
+                    hoverBackgroundColor: 'rgba(255, 106,0,0.6)',
+                    borderColor: '#ff6a00',
+                    data: activeCurrent,
+                },
+                {
+                    label: '',
+                    data: activeCurrent,
                     backgroundColor: 'rgba(255,167,0,0.6)',
-                    borderColor: '#FF9400',
+                    borderColor: '#ff6a00',
                     type: 'line',
                     fill:true,
                 }
@@ -2505,7 +2542,7 @@ function startCountdown() {
         hour = minute * 60,
         day = hour * 24;
 
-    var countDown = new Date(currentDataLive.eq(1).find('td').eq(0).text()).getTime();
+    var countDown = new Date(lastStatisticsTime).getTime();
 
     countDownInterval = setInterval(function() {
 
@@ -2557,7 +2594,10 @@ function changeLivePanelStats(countryName,lastStats){
         if ($('path[title="'+countryName+'"]').length === 0){
            console.log(countryName);
         }
+
+        startCountdown();
     }
+
 }
 
 /**
@@ -2589,7 +2629,6 @@ function updateLivePanelData(countryName,lastStats){
     if (lastStats.liveDeaths > 0){
         $('.death-note').closest('.info-element').addClass('counterAnimationSixty');
     }
-    startCountdown();
 }
 
 /**
@@ -2615,9 +2654,11 @@ function refreshStatistics() {
         $.ajax(settings).done(function (response) {
 
             currentDataLive = $(response).find('.waffle tr');
+            lastStatisticsTime = currentDataLive.eq(1).find('td').eq(0).text();
             checkForChanges();
         });
     }else if (liveSrc === 'fallback'){
+
         fetch("https://coronavirus-monitor.p.rapidapi.com/coronavirus/cases_by_country.php", {
             "method": "GET",
             "headers": {
@@ -2630,6 +2671,8 @@ function refreshStatistics() {
 
             currentDataLiveFallback = data ;
 
+            lastStatisticsTime = new Date(currentDataLiveFallback.statistic_taken_at);
+            lastStatisticsTime = lastStatisticsTime.toUTCString();
             checkForChangesFallback();
         });
     }
@@ -2872,19 +2915,15 @@ function checkForChangesFallback() {
         )
     ){
         console.log('Cache Miss');
-        console.log(totalCases);
-        console.log(totalDeath);
-        console.log(totalRecovered);
         return false;
     }
-    console.log('NEW STATS');
     $.each(countriesHistoryData,function (countryName,countryDaysData) {
 
         /**
          * Get advanced stats for each country last day
          */
         var lastDayAdvancedData = {};
-        $.each(countriesCurrentData.countries_stat,function (key,countryCurrentData) {
+        $.each(currentDataLiveFallback.countries_stat,function (key,countryCurrentData) {
 
             /**
              * If exact case and some mapping
@@ -2919,7 +2958,7 @@ function checkForChangesFallback() {
                     liveCountryDeaths = parseInt(countryCurrentData.deaths.replace(',','')) - countryDaysData[countryDaysData.length-1].deaths,
                     liveCountryRecovered = parseInt(countryCurrentData.total_recovered.replace(',','')) - countryDaysData[countryDaysData.length-1].recovered;
 
-                countryDaysData[countryDaysData.length] = {
+                countryDaysData[countryDaysData.length - 1] = {
                     date: todayDateUse,
                     confirmed: parseInt(countryCurrentData.cases.replace(',','')),
                     deaths: parseInt(countryCurrentData.deaths.replace(',','')),
@@ -2931,6 +2970,8 @@ function checkForChangesFallback() {
                 };
 
                 changeLivePanelStats(countryName,countryDaysData[countryDaysData.length-1]);
+
+                return false;
             }
         });
 
@@ -2992,6 +3033,10 @@ function compareCountries() {
         compareRecovered.destroy();
         compareDeaths.destroy();
         compareActive.destroy();
+        compareDayTotal.destroy();
+        compareDayRecovered.destroy();
+        compareDayDeaths.destroy();
+        compareDayActive.destroy();
     }
 
     var confirmedDatasets = [],
@@ -3024,7 +3069,7 @@ function compareCountries() {
 
         $.each(countriesAllData[countryName],function (k,v) {
 
-            dates.push(v.date);
+            dates.push(v.date.replace('2020-',''));
             total.push(v.confirmed);
             recovered.push(v.recovered);
             deaths.push(v.deaths);
@@ -3260,7 +3305,14 @@ function doTheInit() {
     /**
      * Update time
      */
-    lastStatisticsTime = currentDataLive.eq(1).find('td').eq(0).text();
+    if (liveSrc === 'main'){
+
+        lastStatisticsTime = currentDataLive.eq(1).find('td').eq(0).text();
+    }else if (liveSrc === 'fallback'){
+
+        lastStatisticsTime = new Date(countriesCurrentData.statistic_taken_at);
+        lastStatisticsTime = lastStatisticsTime.toUTCString();
+    }
 
     /**
      * Map the data from apis to main array
@@ -3288,7 +3340,7 @@ function doTheInit() {
         var body = $('body');
 
         /**
-         * Toggle Open map
+         * Toggle Back to map
          */
         body.on('click','.openMap',function () {
             body.find('.mapWrapper').toggleClass('active');
@@ -3315,7 +3367,6 @@ function doTheInit() {
             var countryName = $(this).attr('title'),
                 countryDaysData = countriesMapMapping(countryName);
 
-
             /**
              * Load the stats of that country to the info box
              */
@@ -3325,13 +3376,13 @@ function doTheInit() {
             }else{
                 updateLivePanelData('World',countriesAllCurrentData['World']);
             }
-
         });
 
         /**
          * Update panel to world data when we are in no country
          */
         svgMap.on('mouseleave','path',function () {
+
             updateLivePanelData('World',countriesAllCurrentData['World']);
         });
 
@@ -3340,8 +3391,8 @@ function doTheInit() {
          */
         svgMap.on('click','path',function () {
 
-            var countryName = $(this).attr('title');
-            var countryDaysData = loadCountryStats(countryName);
+            var countryName = $(this).attr('title'),
+                countryDaysData = loadCountryStats(countryName);
 
             if (undefined !== countryDaysData) {
                 body.toggleClass('panel-active');
@@ -3370,10 +3421,12 @@ function doTheInit() {
          */
         body.on('click','.compare',function () {
 
-            $(this).toggleClass('selected');
-            $(this).closest('.mobile-countries-wrapper').toggleClass('charts-active');
+            if (!$('.mobile-countries-wrapper').hasClass('compare-active')) {
 
-            // if ($('.mobile-countries-wrapper').hasClass('chart-active')) {
+                $(this).closest('.mobile-countries-wrapper').addClass('compare-active');
+            }else{
+                $(this).toggleClass('selected');
+                $(this).closest('.mobile-countries-wrapper').toggleClass('charts-active');
 
                 comparedCountries = [];
                 $.each($('.country.selected'),function () {
@@ -3382,8 +3435,9 @@ function doTheInit() {
                 });
 
                 compareCountries();
+            }
 
-            // }
+
         });
 
         /**
@@ -3407,38 +3461,39 @@ function doTheInit() {
 
         /**
          * Interval for automatic stats change
+         * triggers every 59 seconds
          */
         setInterval(function () {
 
             refreshStatistics();
-        },1000 * 15);
+        },1000 * 59);
+
+        /**
+         * On country click start compare system
+         */
+        body.on('click','.country',function () {
+
+            $(this).toggleClass('selected');
+
+            var countryName = $(this).attr('data-value');
+
+            updateLivePanelData(countryName,countriesAllData[countryName][countriesAllData[countryName].length-1]);
+
+            if (!$(this).closest('.mobile-countries-wrapper').hasClass('compare-active')){
+
+                $("#countries-select").animate({scrollTop:0}, 100);
+            }
+
+            $(this).closest('.mobile-countries-wrapper').addClass('compare-active');
+
+            if ($('.country.selected').length > 1){
+                $('.show-stats-btn').addClass('disabled');
+            }else{
+                $('.show-stats-btn').removeClass('disabled');
+            }
+        });
 
         if (isMobile === false){
-
-            /**
-             * On country click start compare system
-             */
-            body.on('click','.country',function () {
-
-                $(this).toggleClass('selected');
-                var countryName = $(this).attr('data-value');
-
-                updateLivePanelData(countryName,countriesAllData[countryName][countriesAllData[countryName].length-1]);
-
-                if ($('.country.selected').length > 0){
-                    if ($('.country.selected').length === 1){
-
-                        $(this).closest('.mobile-countries-wrapper').addClass('compare-active');
-
-                        $("#countries-select").animate({scrollTop:0}, 100);
-                    }
-
-                }else{
-                    $(this).closest('.mobile-countries-wrapper').removeClass('compare-active');
-                    startSelectInterval();
-                }
-            });
-
             /**
              * SVG map zoom init here
              */
@@ -3462,18 +3517,6 @@ function doTheInit() {
             /**
              * MOBILE FUNCTIONS BELOW
              */
-
-            /**
-             * On country click update panel data
-             */
-            body.on('click','.country',function () {
-
-                $('.country').removeClass('selected');
-                $(this).addClass('selected');
-                var countryName = $(this).attr('data-value');
-
-                updateLivePanelData(countryName,countriesAllData[countryName][countriesAllData[countryName].length-1]);
-            });
 
             /**
              * On show stats button click
@@ -3518,6 +3561,8 @@ function doTheInit() {
 
 function startSelectInterval(){
 
+    return false;
+
     if ($('.mobile-countries-wrapper').hasClass('compare-active')){
 
     }else{
@@ -3536,6 +3581,9 @@ function startSelectInterval(){
 }
 
 function stopSelectInterval(){
+
+    return false;
+
     clearInterval(countriesInterval);
     $("#countries-select").clearQueue();
     $("#countries-select").stop();
@@ -3596,14 +3644,3 @@ $.ajax(settings).done(function (response) {
  * Start everything
  */
 doTheInit();
-
-/**
- * TODO
- * - A-Z lista
- * - Order cases
- * - Country flag
- * - Update system
- * - Last update time katw
- * - world charts
- *
- */

@@ -120,18 +120,22 @@ img.logo {
 }
 
 .charts-wrapper {
-    width: calc(100% - 200px - 176px);
+    width: calc(100% - 230px);
     position: relative;
     float: left;
     height: 100vh;
     overflow: auto;
 }
 
+.mobile-countries-wrapper .chart {
+    width: calc(50% - 24px);
+}
+
 .chart {
-    width:33.333%;
-    height: 50vh;
+    width: calc(50% - 10px);
     position: relative;
-    float: left;
+    padding: 4px;
+    display: inline-block;
 }
 
 .openMap.active {
@@ -142,8 +146,8 @@ img.logo {
     width: auto;
     height: 50px;
     border-radius: 2px;
-    right: 20px;
-    bottom: 20px;
+    right: 25px;
+    top: 8px;
     background: #ffffff;
     color: #1f242d;
     text-align: center;
@@ -324,7 +328,7 @@ img.logo {
     top: 76px;
     right: 10px;
     background: #1f242d;
-    width: 190px;
+    width: 250px;
     color: #fff;
     padding: 10px 10px 0;
     border-radius: 4px;
@@ -334,14 +338,19 @@ img.logo {
 }
 
 .panel-active .mobile-countries-wrapper {
-    margin-right: calc(-190px - 30px);
+    margin-right: calc(-250px - 30px);
     transition: 0.2s ease-in-out;
 }
 
 .countries-select {
     position: relative;
-    height: calc(100vh - 142px - 118px);
+    height: calc(100vh - 20rem);
     overflow: auto;
+    transition: 0.2s ease-in-out;
+}
+
+.compare-active .countries-select {
+    height: calc(100vh - 88px);
 }
 .mobile-countries-wrapper .country.selected {
     background: #374871;
@@ -352,6 +361,8 @@ img.logo {
     transition: 0.2s ease-in-out;
     overflow: hidden;
     cursor: pointer;
+    font-size: 1.2em;
+    text-decoration: underline;
 }
 .mobile-countries-wrapper .country.not-matched{
     height: 0px;
@@ -363,7 +374,6 @@ img.logo {
 
 .show-stats-btn {
     position: relative;
-    width: calc(100vw - 170px);
     height: 50px;
     border-radius: 0;
     right: 0;
@@ -398,6 +408,7 @@ input.autocomplete {
 .stats > * {
     display: inline-block;
     margin-right: 6px;
+    font-size: 14px;
 }
 
 span.couR,.recovered-note{
@@ -406,7 +417,7 @@ span.couR,.recovered-note{
 span.couD,.death-note{
     color: #f5403d;
 }
-span.couC,.cases-note{
+span.couC,span.couA,.cases-note{
     color: #f5a83d;
 }
 
@@ -419,7 +430,7 @@ span.statNote {
     color: #1f242d;
 }
 .sort {
-    width: calc(25% - 15px);
+    width: calc(20% - 15px);
     position: relative;
     display: inline-block;
     padding: 5px;
@@ -430,10 +441,12 @@ span.statNote {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    cursor: pointer;
 }
 
 .mobile-countries-wrapper.compare-active {
-    width: 80vw;
+    width: calc(100vw - 40px);
+    top: 0px;
 }
 
 .mobile-countries-wrapper.compare-active .country {
@@ -454,31 +467,48 @@ span.statNote {
 }
 .compare,.close-compare {
 
-    overflow: hidden;
-    width: 0;
     position: relative;
     display: inline-block;
-    padding: 0;
+    overflow: hidden;
     text-align: center;
-    border: 0;
     margin-bottom: 4px;
     transition: 0.2s ease-in-out;
     cursor: pointer;
     background: #374871;
 }
 
+.close-compare{
+    width: 0;
+    padding: 0;
+    border: 0;
+}
+.compare {
+    width: calc(100% - 15px);
+    padding: 5px;
+    border: 1px solid;
+}
+span.note {
+    overflow: hidden;
+}
+.mobile-countries-wrapper.compare-active span.note {
+    padding: 6px;
+    position: absolute;
+}
+
+
+
 .compare-charts-wrapper {
     height: 0;
     transition: 0.2s ease-in-out;
     position: fixed;
-    top: 160px;
-    width: 80vw;
+    top: 82px;
+    width: inherit;
     background: #1f242d;
     overflow: auto;
 }
 .charts-active .compare-charts-wrapper {
 
-    height: calc(100vh - 142px - 118px);
+    height: calc(100vh - 88px);
 }
 
 .chart-label {
@@ -486,78 +516,12 @@ span.statNote {
     padding: 1rem;
     font-size: 1.5em;
 }
-.compare-charts-wrapper .chart {
-    margin-bottom: 3.5rem;
+
+.show-stats-btn.disabled {
+    pointer-events: none;
+    background: #a9a6a6;
 }
 
-@media only screen and (max-width: 900px) {
-    .chart {
-        width: 100% !important;
-    }
-
-    .info-wrapper {
-        width: 170px;
-        display:inline-block;
-        transition: 0.2s ease-in-out;
-    }
-
-    .stats-active .info-wrapper {
-        margin-left: -170px;
-    }
-
-    img.logo {
-        width: 170px;
-    }
-    .mapWrapper {
-        display: none;
-    }
-
-    .stats-active .mobile-countries-wrapper {
-
-        margin-left: calc(100vw + 170px);
-    }
-
-    .charts-wrapper {
-        width: 100vw;
-        position: absolute;
-        padding: 2rem 0;
-        float: left;
-        height: calc(100vh - 50px);
-        overflow: auto;
-    }
-
-    .stats-active .show-stats-btn {
-        width: 100vw;
-        margin-left: calc(-100vw - 170px);
-    }
-
-    input.autocomplete{
-        display: inline-block;
-    }
-
-
-    .mobile-countries-wrapper{
-        display:inline-block;
-        width: calc(100vw - 170px);
-        top: unset;
-        right: unset;
-        height: 100vh;
-        padding: 0;
-        transition: 0.2s ease-in-out 0.4s;
-    }
-
-    .countries-select {
-        height: calc(100vh - 50px - 30px - 0.8em);
-    }
-
-    .show-stats-btn {
-        display: block;
-    }
-
-    .mobile-countries-wrapper .country {
-        pointer-events: auto;
-    }
-}
 ul.counter-list > li {
     display: inline-block;
 }
@@ -663,5 +627,98 @@ ul.counter-list {
     }
     100% {
         fill: #e3e3e3;
+    }
+}
+
+@media only screen and (max-width: 900px) {
+    .chart {
+        width: 100% !important;
+    }
+
+    .info-wrapper {
+        width: 112px;
+        display:inline-block;
+        transition: 0.2s ease-in-out;
+    }
+
+    .stats-active .info-wrapper {
+        margin-left: -170px;
+    }
+
+    img.logo {
+        width: 112px;
+    }
+    .mapWrapper {
+        display: none;
+    }
+
+    .stats-active .mobile-countries-wrapper {
+
+        margin-left: calc(100vw + 170px);
+    }
+
+    .charts-wrapper {
+        width: 100vw;
+        position: absolute;
+        padding: 2rem 0;
+        float: left;
+        height: calc(100vh - 50px);
+        overflow: auto;
+    }
+
+    .stats-active .show-stats-btn {
+        width: 100vw;
+        margin-left: calc(-100vw - 170px);
+    }
+
+    input.autocomplete{
+        display: inline-block;
+    }
+
+    .mobile-countries-wrapper.compare-active{
+        left: 0;
+        width: 100vw;
+    }
+    .mobile-countries-wrapper{
+        display:inline-block;
+        width: calc(100vw - 112px);
+        top: unset;
+        left: 112px;
+        height: 100vh;
+        padding: 0;
+        transition: 0.2s ease-in-out;
+    }
+
+    .countries-select {
+        height: calc(100vh - 15.5em);
+    }
+
+    .show-stats-btn {
+        display: block;
+    }
+
+    .mobile-countries-wrapper .country,.mobile-countries-wrapper.compare-active .country {
+        pointer-events: auto;
+        width: 100%;
+    }
+
+    span.note,.mobile-countries-wrapper.compare-active span.note{
+        padding: 0 5px;
+        display: block;
+        position: relative;
+    }
+
+    .mobile-countries-wrapper.compare-active .compare, .mobile-countries-wrapper.compare-active .close-compare {
+        width: calc(50% - 15px);
+    }
+
+    .compare-active .countries-select {
+        height: calc(100vh - 12.5rem);
+    }
+
+    .charts-active .compare-charts-wrapper {
+        height: calc(100vh - 6.5rem);
+        top: 112px;
+        z-index: 2;
     }
 }
