@@ -14,9 +14,13 @@ Just Download the repo and open index.html in any browser
 - More Country Charts
 
 # CHANGELOG
+v1.3.2
+- Countries are loaded dynamically
+- Compare system starts from custom case number input
+- Bug Fixes
+
 v1.3.1
 - Charts now start from a custom case number input
-- Compare system starts from custom case number input
 - Bug Fixes
 
 v1.3.0
