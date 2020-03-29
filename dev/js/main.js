@@ -2110,24 +2110,14 @@ function mapData() {
 
 function addDataToSelect(){
 
-    $('.stats').remove();
-
-    $.each($('.country'),function () {
-
-        var countryName = $(this).attr('data-value'),
-            countryData,
-            countryStatsHTML = '';
-
-        if (undefined !== countriesAllData[countryName]){
-            countryData = countriesAllData[countryName][countriesAllData[countryName].length-1];
-            var active = countryData.confirmed - countryData.deaths - countryData.recovered;
-            countryStatsHTML = '<div class="stats"><div class="c">C: <span class="couC">'+countryData.confirmed+'</span></div><div class="a">A: <span class="couA">'+active+'</span></div><div class="d">D: <span class="couD">'+countryData.deaths+'</span></div><div class="r">R: <span class="couR">'+countryData.recovered+'</span></div></div>'
-
-            $(this).append(countryStatsHTML);
-        }else{
-            $(this).remove();
-        }
-
+    /**
+     * Add countries to the select
+     */
+    Object.keys(countriesAllData).forEach(function(countryName) {
+        var countryData = countriesAllData[countryName][countriesAllData[countryName].length-1],
+            active = countryData.confirmed - countryData.deaths - countryData.recovered,
+            countryStatsHTML = '<div class="country" data-value="'+countryName+'">'+countryName+'<div class="stats"><div class="c">C: <span class="couC">'+countryData.confirmed+'</span></div><div class="a">A: <span class="couA">'+active+'</span></div><div class="d">D: <span class="couD">'+countryData.deaths+'</span></div><div class="r">R: <span class="couR">'+countryData.recovered+'</span></div></div></div>';
+        $('#countries-select').append(countryStatsHTML);
     });
 
     /**
@@ -3111,7 +3101,8 @@ function compareCountries() {
         recoveredCurrentDatasets = [],
         deathsDatasets = [],
         deathsCurrentDatasets = [],
-        dates = [];
+        dates = [],
+        compareCaseStart = $('#startFromCaseCompare').val();
 
     $.each(comparedCountries,function (key,countryName) {
 
@@ -3135,7 +3126,7 @@ function compareCountries() {
         $.each(countriesAllData[countryName],function (k,v) {
 
 
-            if (v.confirmed > 25) {
+            if (v.confirmed > compareCaseStart) {
 
                 ++dateC;
                 if (undefined === dates[dateC]){
@@ -3538,6 +3529,14 @@ function doTheInit() {
 
             var countryName = $('.countryN').text();
             loadCountryStats(countryName);
+        });
+
+        /**
+         * On startFromCompare change
+         */
+        body.on('change','#startFromCaseCompare',function () {
+
+            compareCountries();
         });
 
         /**
