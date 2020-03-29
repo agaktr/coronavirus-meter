@@ -2079,7 +2079,7 @@ function mapData() {
          */
         totalCasesDone = true;
     });
-console.log(countriesAllData);
+
     /**
      * Create currentAllStats
      */
@@ -2234,6 +2234,8 @@ var deathsChart,
     recoveredCurrentChart;
 function loadCharts(countryName,data) {
 
+    console.log(data);
+
     /**
      * Refresh Charts
      */
@@ -2259,34 +2261,55 @@ function loadCharts(countryName,data) {
     var currC = 0;
     var currD = 0;
     var currR = 0;
+    var casesMax = 0;
+    $.each(data,function (k,v) {
+
+        if (v.confirmed > casesMax){
+            casesMax = v.confirmed;
+        }
+    });
+
+    var baseCaseToStart = $('#startFromCase').val();
+    var baseCasesCap = 250;
+    if (casesMax < baseCasesCap){
+        baseCaseToStart = 0;
+    }
 
     $.each(data,function (k,v) {
 
-        if ((null === v.recovered || undefined === v.recovered || v.recovered === 0) && currR > 0){
-            v.recovered = currR;
+        // if ((null === v.recovered || undefined === v.recovered || v.recovered === 0) && currR > 0){
+        //     v.recovered = currR;
+        // }
+
+        if (v.confirmed > baseCaseToStart){
+
+            dates.push(v.date.replace('2020-',''));
+            confirmed.push(v.confirmed);
+            confirmedCurrent.push(v.confirmed - currC);
+            deaths.push(v.deaths);
+            deathsCurrent.push(v.deaths - currD);
+            recovered.push(v.recovered);
+            recoveredCurrent.push(v.recovered - currR);
+            var activec = v.confirmed - v.deaths - v.recovered;
+            active.push(activec);
+            activeCurrent.push(activec - currA);
+
+            currC = v.confirmed;
+            currD = v.deaths;
+            currR = v.recovered;
+            currA = activec;
         }
-
-        dates.push(v.date.replace('2020-',''));
-        confirmed.push(v.confirmed);
-        confirmedCurrent.push(v.confirmed - currC);
-        deaths.push(v.deaths);
-        deathsCurrent.push(v.deaths - currD);
-        recovered.push(v.recovered);
-        recoveredCurrent.push(v.recovered - currR);
-        var activec = v.confirmed - v.deaths - v.recovered;
-        active.push(activec);
-        activeCurrent.push(activec - currA);
-
-        currC = v.confirmed;
-        currD = v.deaths;
-        currR = v.recovered;
-        currA = activec;
     });
 
     /**
      * Load the stats of that country to the info box
      */
     updateLivePanelData(countryName,data[data.length-1]);
+
+    /**
+     * Update country specific data
+     */
+    updateCountrySpecificData(countryName,data[data.length-1]);
 
     /**
      * chart same vars
@@ -2328,6 +2351,20 @@ function loadCharts(countryName,data) {
             responsive:true,
         }
     };
+
+    // // console.log(confirmed);
+    // var confirmedTemp = confirmed;
+    // console.log(confirmedTemp);
+    //
+    // $.each(confirmedTemp,function (k,v) {
+    //     console.log(v);
+    // //
+    //     if (v < 25){
+    // //         dates.shift();
+    //         confirmed.shift();
+    // //         active.shift();
+    //     }
+    // });
 
     /**
      * Active cases
@@ -2414,6 +2451,7 @@ function loadCharts(countryName,data) {
             ]
         },
     });
+
 
     /**
      * Total Recovered
@@ -2527,6 +2565,14 @@ function loadCharts(countryName,data) {
         },
     });
 
+
+
+
+
+
+
+
+
 }
 
 function startCountdown() {
@@ -2629,6 +2675,24 @@ function updateLivePanelData(countryName,lastStats){
     if (lastStats.liveDeaths > 0){
         $('.death-note').closest('.info-element').addClass('counterAnimationSixty');
     }
+}
+
+/**
+ * This function updates the panel data on demand
+ */
+function updateCountrySpecificData(countryName,lastStats){
+
+
+    var pa = lastStats.active_cases*100/lastStats.confirmed;
+    var pd = lastStats.deaths*100/lastStats.confirmed;
+    var pr = lastStats.recovered*100/lastStats.confirmed;
+    var icu = lastStats.serious_critical;
+;
+
+    $('.percentActive .pA').text(pa.toFixed(2)+'%');
+    $('.percentDeath .pD').text(pd.toFixed(2)+'%');
+    $('.percentRecovered .pR').text(pr.toFixed(2)+'%');
+    $('.icuCount .icuC').text(icu);
 }
 
 /**
@@ -3059,7 +3123,7 @@ function compareCountries() {
             recoveredCurrent = [],
             deathsCurrent = [],
             activeCurrent = [];
-        dates = [];
+            // dates = [];
         var randomColor = Math.floor(Math.random()*16777215).toString(16);
 
         var currA = 0;
@@ -3067,24 +3131,35 @@ function compareCountries() {
         var currD = 0;
         var currR = 0;
 
+        var dateC = 0;
         $.each(countriesAllData[countryName],function (k,v) {
 
-            dates.push(v.date.replace('2020-',''));
-            total.push(v.confirmed);
-            recovered.push(v.recovered);
-            deaths.push(v.deaths);
-            var activeCases = v.confirmed - v.recovered - v.deaths;
-            active.push(activeCases);
 
-            confirmedCurrent.push(v.confirmed - currC);
-            deathsCurrent.push(v.deaths - currD);
-            recoveredCurrent.push(v.recovered - currR);
-            activeCurrent.push(activeCases - currA);
+            if (v.confirmed > 25) {
 
-            currC = v.confirmed;
-            currD = v.deaths;
-            currR = v.recovered;
-            currA = activeCases;
+                ++dateC;
+                if (undefined === dates[dateC]){
+
+                    dates.push(dateC);
+                }
+
+                total.push(v.confirmed);
+                recovered.push(v.recovered);
+                deaths.push(v.deaths);
+                var activeCases = v.confirmed - v.recovered - v.deaths;
+                active.push(activeCases);
+
+                confirmedCurrent.push(v.confirmed - currC);
+                deathsCurrent.push(v.deaths - currD);
+                recoveredCurrent.push(v.recovered - currR);
+                activeCurrent.push(activeCases - currA);
+
+                currC = v.confirmed;
+                currD = v.deaths;
+                currR = v.recovered;
+                currA = activeCases;
+
+            }
         });
 
         confirmedDatasets[key] = {
@@ -3297,9 +3372,11 @@ function doTheInit() {
         setTimeout(doTheInit,1);//wait 50 millisecnds then recheck
         return;
     }
-    if (undefined === currentDataLive) {//we want it to match
-        setTimeout(doTheInit,1);//wait 50 millisecnds then recheck
-        return;
+    if (liveSrc === 'main') {
+        if (undefined === currentDataLive) {//we want it to match
+            setTimeout(doTheInit,1);//wait 50 millisecnds then recheck
+            return;
+        }
     }
 
     /**
@@ -3452,6 +3529,15 @@ function doTheInit() {
             $('.country').removeClass('selected');
             $(this).closest('.mobile-countries-wrapper').removeClass('compare-active');
             startSelectInterval();
+        });
+
+        /**
+         * On startFromCount change
+         */
+        body.on('change','#startFromCase',function () {
+
+            var countryName = $('.countryN').text();
+            loadCountryStats(countryName);
         });
 
         /**
@@ -3629,16 +3715,20 @@ fetch("https://coronavirus-monitor.p.rapidapi.com/coronavirus/worldstat.php", {
         currentTotalData = data ;
     });
 
-var settings = {
-    "async": true,
-    "url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQuDj0R6K85sdtI8I-Tc7RCx8CnIxKUQue0TCUdrFOKDw9G3JRtGhl64laDd3apApEvIJTdPFJ9fEUL/pubhtml?gid=0&single=true&output=html",
-    "method": "GET",
-};
+if (liveSrc === 'main'){
 
-$.ajax(settings).done(function (response) {
+    var settings = {
+        "async": true,
+        "url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQuDj0R6K85sdtI8I-Tc7RCx8CnIxKUQue0TCUdrFOKDw9G3JRtGhl64laDd3apApEvIJTdPFJ9fEUL/pubhtml?gid=0&single=true&output=html",
+        "method": "GET",
+    };
 
-    currentDataLive = $(response).find('.waffle tr');
-});
+    $.ajax(settings).done(function (response) {
+
+        currentDataLive = $(response).find('.waffle tr');
+    });
+}
+
 
 /**
  * Start everything

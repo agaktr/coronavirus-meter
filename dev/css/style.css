@@ -124,6 +124,13 @@ img.logo {
     position: relative;
     float: left;
     height: 100vh;
+    overflow: hidden;
+}
+
+.charts-w {
+    position: relative;
+    float: left;
+    height: 100vh;
     overflow: auto;
 }
 
@@ -570,6 +577,42 @@ ul.counter-list {
     transition: 0.2s ease-in-out;
 }
 
+.countryInfoWrapper {
+    color: #fff;
+    padding: 0 1rem;
+}
+
+.countryInfoWrapper > * {
+    display: inline-block;
+    margin-right: 1rem;
+}
+
+.pA{
+    color: #f5a83d;
+}
+.pD{
+    color: #eb5569;
+}
+.pR{
+    color: #4CAF50;
+}
+
+.icuC{
+    color: #f5403d;
+}
+
+.startFrom{
+    display:block;
+}
+
+input#startFromCase {
+    max-width: 5rem;
+    background: #1f242d;
+    color: #fff;
+    border: 0;
+    border-bottom: 1px solid;
+}
+
 @keyframes pulse {
     0% {
         background-color: #1f242d;
@@ -660,7 +703,7 @@ ul.counter-list {
     .charts-wrapper {
         width: 100vw;
         position: absolute;
-        padding: 2rem 0;
+        padding: 0;
         float: left;
         height: calc(100vh - 50px);
         overflow: auto;
@@ -720,5 +763,14 @@ ul.counter-list {
         height: calc(100vh - 6.5rem);
         top: 112px;
         z-index: 2;
+    }
+
+    canvas {
+        width: 100vw!important;
+        height: auto!important;
+    }
+
+    .countryInfoWrapper > * {
+        margin: 4px;
     }
 }
