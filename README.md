@@ -11,11 +11,14 @@ The historical data is fetched from APIs that combine numerous sources like the 
 Just Download the repo and open index.html in any browser
 
 # TODO
-- More Global Charts
 - More Country Charts
-- Bug Fixes
 
 # CHANGELOG
+v1.3.0
+- Bug Fixes
+- Compare system available on mobile too
+- Better mobile responsiveness
+
 v1.2.0
 - Compare countries statistics by clicking on the countries dropdown
 - Beutification
